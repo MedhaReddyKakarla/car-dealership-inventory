@@ -9,6 +9,7 @@ TEST_EMAILS = {
     "duplicate@example.com",
     "hash@example.com",
     "login@example.com",
+    "wrong-password@example.com",
 }
 
 

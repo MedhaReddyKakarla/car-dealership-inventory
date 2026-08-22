@@ -102,3 +102,38 @@ def test_login_user():
 
     assert "access_token" in data
     assert data["token_type"] == "bearer"
+
+
+def test_login_with_wrong_password():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Wrong Password User",
+            "email": "wrong-password@example.com",
+            "password": "Correct123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "wrong-password@example.com",
+            "password": "Wrong123!",
+        },
+    )
+
+    assert response.status_code == 401
+
+
+def test_login_with_unknown_email():
+    response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "does-not-exist@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert response.status_code == 401
