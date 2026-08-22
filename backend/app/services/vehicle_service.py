@@ -76,3 +76,29 @@ def search_vehicles(
         .order_by(Vehicle.id)
         .all()
     )
+
+
+def update_vehicle(
+    db: Session,
+    vehicle_id: int,
+    vehicle_data: VehicleCreate,
+) -> Vehicle | None:
+    vehicle = (
+        db.query(Vehicle)
+        .filter(Vehicle.id == vehicle_id)
+        .first()
+    )
+
+    if vehicle is None:
+        return None
+
+    vehicle.make = vehicle_data.make
+    vehicle.model = vehicle_data.model
+    vehicle.category = vehicle_data.category
+    vehicle.price = vehicle_data.price
+    vehicle.quantity = vehicle_data.quantity
+
+    db.commit()
+    db.refresh(vehicle)
+
+    return vehicle
