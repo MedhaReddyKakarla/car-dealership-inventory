@@ -9,6 +9,14 @@ class VehicleCreate(BaseModel):
     quantity: int = Field(ge=0)
 
 
+class VehicleUpdate(BaseModel):
+    make: str = Field(min_length=1, max_length=100)
+    model: str = Field(min_length=1, max_length=100)
+    category: str = Field(min_length=1, max_length=100)
+    price: float = Field(gt=0)
+    quantity: int = Field(ge=0)
+
+
 class VehicleResponse(BaseModel):
     id: int
     make: str
@@ -18,3 +26,11 @@ class VehicleResponse(BaseModel):
     quantity: int
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class VehicleListResponse(BaseModel):
+    items: list[VehicleResponse]
+    page: int
+    limit: int
+    total: int
+    pages: int

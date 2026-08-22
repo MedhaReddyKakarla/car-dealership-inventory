@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.models.vehicle import Vehicle
-from app.schemas.vehicle import VehicleCreate
+from app.schemas.vehicle import VehicleCreate, VehicleUpdate
 
 
 def create_vehicle(
@@ -28,10 +28,35 @@ def get_all_vehicles(
 ) -> list[Vehicle]:
     return (
         db.query(Vehicle)
-        .filter(Vehicle.quantity > 0)
         .order_by(Vehicle.id)
         .all()
     )
+
+
+def get_paginated_vehicles(
+    db: Session,
+    page: int,
+    limit: int,
+) -> tuple[list[Vehicle], int, int]:
+    query = (
+        db.query(Vehicle)
+        .order_by(Vehicle.id)
+    )
+
+    total = query.count()
+
+    offset = (page - 1) * limit
+
+    vehicles = (
+        query
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+
+    pages = (total + limit - 1) // limit if total > 0 else 0
+
+    return vehicles, total, pages
 
 
 def search_vehicles(
@@ -42,34 +67,22 @@ def search_vehicles(
     min_price: float | None = None,
     max_price: float | None = None,
 ) -> list[Vehicle]:
-    query = db.query(Vehicle).filter(
-        Vehicle.quantity > 0
-    )
+    query = db.query(Vehicle)
 
     if make is not None:
-        query = query.filter(
-            Vehicle.make.ilike(f"%{make}%")
-        )
+        query = query.filter(Vehicle.make.ilike(f"%{make}%"))
 
     if model is not None:
-        query = query.filter(
-            Vehicle.model.ilike(f"%{model}%")
-        )
+        query = query.filter(Vehicle.model.ilike(f"%{model}%"))
 
     if category is not None:
-        query = query.filter(
-            Vehicle.category.ilike(f"%{category}%")
-        )
+        query = query.filter(Vehicle.category.ilike(f"%{category}%"))
 
     if min_price is not None:
-        query = query.filter(
-            Vehicle.price >= min_price
-        )
+        query = query.filter(Vehicle.price >= min_price)
 
     if max_price is not None:
-        query = query.filter(
-            Vehicle.price <= max_price
-        )
+        query = query.filter(Vehicle.price <= max_price)
 
     return (
         query
@@ -81,7 +94,7 @@ def search_vehicles(
 def update_vehicle(
     db: Session,
     vehicle_id: int,
-    vehicle_data: VehicleCreate,
+    vehicle_data: VehicleUpdate,
 ) -> Vehicle | None:
     vehicle = (
         db.query(Vehicle)
