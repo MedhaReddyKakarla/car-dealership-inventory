@@ -8,6 +8,7 @@ TEST_EMAILS = {
     "medha@example.com",
     "duplicate@example.com",
     "hash@example.com",
+    "login@example.com",
 }
 
 
