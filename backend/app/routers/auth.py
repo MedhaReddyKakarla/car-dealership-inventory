@@ -1,5 +1,9 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, EmailStr
+from sqlalchemy.orm import Session
+
+from app.database import get_db
+from app.services.auth_service import register_user
 
 
 router = APIRouter()
@@ -12,8 +16,25 @@ class RegisterRequest(BaseModel):
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-def register_user(user: RegisterRequest):
+def register(
+    user: RegisterRequest,
+    db: Session = Depends(get_db),
+):
+    try:
+        created_user = register_user(
+            db=db,
+            name=user.name,
+            email=user.email,
+            password=user.password,
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(error),
+        )
+
     return {
-        "name": user.name,
-        "email": user.email,
+        "id": created_user.id,
+        "name": created_user.name,
+        "email": created_user.email,
     }
