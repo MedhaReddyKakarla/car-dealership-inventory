@@ -33,10 +33,16 @@ def create_vehicle_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return create_vehicle(
-        db=db,
-        vehicle_data=vehicle_data,
-    )
+    try:
+        return create_vehicle(
+            db=db,
+            vehicle_data=vehicle_data,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )
 
 
 @router.get(
@@ -56,13 +62,9 @@ def list_vehicles(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # No pagination parameters:
-    # return the original plain list response.
     if page is None and limit is None:
         return get_all_vehicles(db=db)
 
-    # Pagination requested:
-    # return the paginated response.
     if page is None:
         page = 1
 
@@ -123,11 +125,17 @@ def update_vehicle_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    vehicle = update_vehicle(
-        db=db,
-        vehicle_id=vehicle_id,
-        vehicle_data=vehicle_data,
-    )
+    try:
+        vehicle = update_vehicle(
+            db=db,
+            vehicle_id=vehicle_id,
+            vehicle_data=vehicle_data,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )
 
     if vehicle is None:
         raise HTTPException(

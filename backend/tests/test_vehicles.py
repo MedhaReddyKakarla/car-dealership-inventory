@@ -712,3 +712,299 @@ def test_authenticated_user_can_paginate_vehicles():
     assert data["limit"] == 2
     assert data["total"] == 5
     assert data["pages"] == 3
+
+def test_vehicle_cannot_have_negative_price():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Validation User",
+            "email": "validation-price@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "validation-price@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    response = client.post(
+        "/api/vehicles",
+        headers={
+            "Authorization": f"Bearer {token}",
+        },
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "category": "Sedan",
+            "price": -1000,
+            "quantity": 5,
+        },
+    )
+
+    assert response.status_code == 422
+
+
+def test_vehicle_cannot_have_negative_quantity():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Validation User",
+            "email": "validation-quantity@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "validation-quantity@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    response = client.post(
+        "/api/vehicles",
+        headers={
+            "Authorization": f"Bearer {token}",
+        },
+        json={
+            "make": "Honda",
+            "model": "Civic",
+            "category": "Sedan",
+            "price": 22000,
+            "quantity": -5,
+        },
+    )
+
+    assert response.status_code == 422
+
+
+def test_vehicle_cannot_have_zero_price():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Zero Price User",
+            "email": "zero-price@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "zero-price@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    response = client.post(
+        "/api/vehicles",
+        headers={
+            "Authorization": f"Bearer {token}",
+        },
+        json={
+            "make": "Honda",
+            "model": "City",
+            "category": "Sedan",
+            "price": 0,
+            "quantity": 2,
+        },
+    )
+
+    assert response.status_code == 422
+
+def test_vehicle_cannot_have_empty_make():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Empty Make User",
+            "email": "empty-make@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "empty-make@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    response = client.post(
+        "/api/vehicles",
+        headers={
+            "Authorization": f"Bearer {token}",
+        },
+        json={
+            "make": "",
+            "model": "Camry",
+            "category": "Sedan",
+            "price": 25000,
+            "quantity": 5,
+        },
+    )
+
+    assert response.status_code == 422
+
+
+def test_vehicle_cannot_have_empty_model():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Empty Model User",
+            "email": "empty-model@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "empty-model@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    response = client.post(
+        "/api/vehicles",
+        headers={
+            "Authorization": f"Bearer {token}",
+        },
+        json={
+            "make": "Toyota",
+            "model": "",
+            "category": "Sedan",
+            "price": 25000,
+            "quantity": 5,
+        },
+    )
+
+    assert response.status_code == 422
+
+
+def test_vehicle_cannot_have_empty_category():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Empty Category User",
+            "email": "empty-category@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "empty-category@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    response = client.post(
+        "/api/vehicles",
+        headers={
+            "Authorization": f"Bearer {token}",
+        },
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "category": "",
+            "price": 25000,
+            "quantity": 5,
+        },
+    )
+
+    assert response.status_code == 422
+
+def test_duplicate_vehicle_cannot_be_created():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Duplicate Vehicle User",
+            "email": "duplicate-vehicle@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "duplicate-vehicle@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    vehicle = {
+        "make": "Toyota",
+        "model": "Camry",
+        "category": "Sedan",
+        "price": 25000,
+        "quantity": 5,
+    }
+
+    first_response = client.post(
+        "/api/vehicles",
+        headers=headers,
+        json=vehicle,
+    )
+
+    assert first_response.status_code == 201
+
+    second_response = client.post(
+        "/api/vehicles",
+        headers=headers,
+        json=vehicle,
+    )
+
+    assert second_response.status_code == 400

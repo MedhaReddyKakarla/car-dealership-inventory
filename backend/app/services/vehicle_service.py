@@ -8,6 +8,21 @@ def create_vehicle(
     db: Session,
     vehicle_data: VehicleCreate,
 ) -> Vehicle:
+    existing_vehicle = (
+        db.query(Vehicle)
+        .filter(
+            Vehicle.make == vehicle_data.make,
+            Vehicle.model == vehicle_data.model,
+            Vehicle.category == vehicle_data.category,
+        )
+        .first()
+    )
+
+    if existing_vehicle is not None:
+        raise ValueError(
+            "Vehicle with the same make, model, and category already exists"
+        )
+
     vehicle = Vehicle(
         make=vehicle_data.make,
         model=vehicle_data.model,
@@ -70,19 +85,29 @@ def search_vehicles(
     query = db.query(Vehicle)
 
     if make is not None:
-        query = query.filter(Vehicle.make.ilike(f"%{make}%"))
+        query = query.filter(
+            Vehicle.make.ilike(f"%{make}%")
+        )
 
     if model is not None:
-        query = query.filter(Vehicle.model.ilike(f"%{model}%"))
+        query = query.filter(
+            Vehicle.model.ilike(f"%{model}%")
+        )
 
     if category is not None:
-        query = query.filter(Vehicle.category.ilike(f"%{category}%"))
+        query = query.filter(
+            Vehicle.category.ilike(f"%{category}%")
+        )
 
     if min_price is not None:
-        query = query.filter(Vehicle.price >= min_price)
+        query = query.filter(
+            Vehicle.price >= min_price
+        )
 
     if max_price is not None:
-        query = query.filter(Vehicle.price <= max_price)
+        query = query.filter(
+            Vehicle.price <= max_price
+        )
 
     return (
         query
@@ -104,6 +129,22 @@ def update_vehicle(
 
     if vehicle is None:
         return None
+
+    duplicate_vehicle = (
+        db.query(Vehicle)
+        .filter(
+            Vehicle.id != vehicle_id,
+            Vehicle.make == vehicle_data.make,
+            Vehicle.model == vehicle_data.model,
+            Vehicle.category == vehicle_data.category,
+        )
+        .first()
+    )
+
+    if duplicate_vehicle is not None:
+        raise ValueError(
+            "Vehicle with the same make, model, and category already exists"
+        )
 
     vehicle.make = vehicle_data.make
     vehicle.model = vehicle_data.model

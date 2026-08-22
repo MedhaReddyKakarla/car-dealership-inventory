@@ -21,6 +21,14 @@ TEST_EMAILS = {
     "regular-delete@example.com",
     "admin-not-found@example.com",
     "pagination@example.com",
+    "validation-price@example.com",
+    "validation-quantity@example.com",
+    "zero-price@example.com",
+    "empty-make@example.com",
+    "empty-model@example.com",
+    "empty-category@example.com",
+    "duplicate-vehicle@example.com",
+    
 }
 
 
