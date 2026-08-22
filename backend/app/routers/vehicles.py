@@ -2,11 +2,15 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.dependencies.auth import get_current_user
+from app.dependencies.auth import (
+    get_current_admin,
+    get_current_user,
+)
 from app.models.user import User
 from app.schemas.vehicle import VehicleCreate, VehicleResponse
 from app.services.vehicle_service import (
     create_vehicle,
+    delete_vehicle,
     get_all_vehicles,
     search_vehicles,
     update_vehicle,
@@ -92,3 +96,26 @@ def edit_vehicle(
         )
 
     return vehicle
+
+
+@router.delete(
+    "/{vehicle_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def remove_vehicle(
+    vehicle_id: int,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    deleted = delete_vehicle(
+        db=db,
+        vehicle_id=vehicle_id,
+    )
+
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Vehicle not found",
+        )
+
+    return None

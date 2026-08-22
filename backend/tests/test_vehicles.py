@@ -400,3 +400,135 @@ def test_authenticated_user_can_update_vehicle():
     assert data["category"] == "Sedan"
     assert data["price"] == 23000
     assert data["quantity"] == 7
+
+
+def test_admin_can_delete_vehicle():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Admin Test User",
+            "email": "admin@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    from app.database import SessionLocal
+    from app.models.user import User
+
+    db = SessionLocal()
+
+    try:
+        user = (
+            db.query(User)
+            .filter(User.email == "admin@example.com")
+            .first()
+        )
+
+        assert user is not None
+
+        user.is_admin = True
+
+        db.commit()
+    finally:
+        db.close()
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "admin@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    create_response = client.post(
+        "/api/vehicles",
+        headers=headers,
+        json={
+            "make": "Toyota",
+            "model": "Corolla",
+            "category": "Sedan",
+            "price": 23000,
+            "quantity": 4,
+        },
+    )
+
+    assert create_response.status_code == 201
+
+    vehicle_id = create_response.json()["id"]
+
+    delete_response = client.delete(
+        f"/api/vehicles/{vehicle_id}",
+        headers=headers,
+    )
+
+    assert delete_response.status_code == 204
+
+    get_response = client.get(
+        "/api/vehicles",
+        headers=headers,
+    )
+
+    assert get_response.status_code == 200
+    assert get_response.json() == []
+
+
+def test_regular_user_cannot_delete_vehicle():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Regular Delete User",
+            "email": "regular-delete@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "regular-delete@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    create_response = client.post(
+        "/api/vehicles",
+        headers=headers,
+        json={
+            "make": "Honda",
+            "model": "City",
+            "category": "Sedan",
+            "price": 18000,
+            "quantity": 2,
+        },
+    )
+
+    assert create_response.status_code == 201
+
+    vehicle_id = create_response.json()["id"]
+
+    delete_response = client.delete(
+        f"/api/vehicles/{vehicle_id}",
+        headers=headers,
+    )
+
+    assert delete_response.status_code == 403

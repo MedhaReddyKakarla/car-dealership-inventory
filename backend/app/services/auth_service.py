@@ -14,15 +14,20 @@ def register_user(
     email: str,
     password: str,
 ) -> User:
-    existing_user = db.query(User).filter(User.email == email).first()
+    existing_user = (
+        db.query(User)
+        .filter(User.email == email)
+        .first()
+    )
 
-    if existing_user:
+    if existing_user is not None:
         raise ValueError("Email already registered")
 
     user = User(
         name=name,
         email=email,
         password_hash=hash_password(password),
+        is_admin=False,
     )
 
     db.add(user)
@@ -37,15 +42,25 @@ def login_user(
     email: str,
     password: str,
 ) -> str:
-    user = db.query(User).filter(User.email == email).first()
+    user = (
+        db.query(User)
+        .filter(User.email == email)
+        .first()
+    )
 
-    if not user:
+    if user is None:
         raise ValueError("Invalid email or password")
 
-    if not verify_password(password, user.password_hash):
+    if not verify_password(
+        password,
+        user.password_hash,
+    ):
         raise ValueError("Invalid email or password")
 
     return create_access_token(
-        user_id=user.id,
-        email=user.email,
+        {
+            "sub": str(user.id),
+            "email": user.email,
+            "is_admin": user.is_admin,
+        }
     )

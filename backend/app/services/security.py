@@ -1,23 +1,13 @@
-import os
 from datetime import datetime, timedelta, timezone
 
-from dotenv import load_dotenv
-from jose import jwt
+import jwt
 from pwdlib import PasswordHash
 
 
-load_dotenv()
+SECRET_KEY = "change-this-secret-key-in-production"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-
-if not SECRET_KEY:
-    raise RuntimeError("SECRET_KEY is not configured")
-
-ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-
-ACCESS_TOKEN_EXPIRE_MINUTES = int(
-    os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
-)
 
 password_hash = PasswordHash.recommended()
 
@@ -36,22 +26,35 @@ def verify_password(
     )
 
 
-def create_access_token(
-    user_id: int,
-    email: str,
-) -> str:
-    expires_at = datetime.now(timezone.utc) + timedelta(
+def create_access_token(data: dict) -> str:
+    to_encode = data.copy()
+
+    expire = datetime.now(timezone.utc) + timedelta(
         minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )
 
-    payload = {
-        "sub": str(user_id),
-        "email": email,
-        "exp": expires_at,
-    }
+    to_encode.update(
+        {
+            "exp": expire,
+        }
+    )
 
     return jwt.encode(
-        payload,
+        to_encode,
         SECRET_KEY,
         algorithm=ALGORITHM,
     )
+
+
+def decode_access_token(token: str) -> dict | None:
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM],
+        )
+
+        return payload
+
+    except jwt.PyJWTError:
+        return None

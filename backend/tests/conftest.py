@@ -17,6 +17,8 @@ TEST_EMAILS = {
     "category-search@example.com",
     "price-search@example.com",
     "update@example.com",
+    "admin@example.com",
+    "regular-delete@example.com",
 }
 
 
