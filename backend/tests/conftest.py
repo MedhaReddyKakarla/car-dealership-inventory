@@ -11,7 +11,9 @@ TEST_EMAILS = {
     "login@example.com",
     "wrong-password@example.com",
     "vehicle@example.com",
+    "list@example.com",
 }
+
 @pytest.fixture(autouse=True)
 def clean_test_users():
     db = SessionLocal()
