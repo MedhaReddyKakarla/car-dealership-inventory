@@ -19,6 +19,7 @@ TEST_EMAILS = {
     "update@example.com",
     "admin@example.com",
     "regular-delete@example.com",
+    "admin-not-found@example.com",
 }
 
 

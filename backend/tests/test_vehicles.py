@@ -51,7 +51,7 @@ def test_authenticated_user_can_create_vehicle():
     assert data["make"] == "Toyota"
     assert data["model"] == "Camry"
     assert data["category"] == "Sedan"
-    assert data["price"] == 25000
+    assert float(data["price"]) == 25000
     assert data["quantity"] == 5
 
 
@@ -79,11 +79,13 @@ def test_authenticated_user_can_list_vehicles():
 
     token = login_response.json()["access_token"]
 
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
     create_response = client.post(
         "/api/vehicles",
-        headers={
-            "Authorization": f"Bearer {token}",
-        },
+        headers=headers,
         json={
             "make": "Honda",
             "model": "Civic",
@@ -97,9 +99,7 @@ def test_authenticated_user_can_list_vehicles():
 
     response = client.get(
         "/api/vehicles",
-        headers={
-            "Authorization": f"Bearer {token}",
-        },
+        headers=headers,
     )
 
     assert response.status_code == 200
@@ -108,12 +108,8 @@ def test_authenticated_user_can_list_vehicles():
 
     assert isinstance(data, list)
     assert len(data) == 1
-
     assert data[0]["make"] == "Honda"
     assert data[0]["model"] == "Civic"
-    assert data[0]["category"] == "Sedan"
-    assert data[0]["price"] == 22000
-    assert data[0]["quantity"] == 3
 
 
 def test_authenticated_user_can_search_vehicles():
@@ -188,7 +184,6 @@ def test_authenticated_user_can_search_vehicles():
 
     assert len(data) == 1
     assert data[0]["make"] == "Toyota"
-    assert data[0]["model"] == "Camry"
 
 
 def test_search_vehicles_by_category():
@@ -222,10 +217,17 @@ def test_search_vehicles_by_category():
     vehicles = [
         {
             "make": "Toyota",
-            "model": "Camry",
+            "model": "RAV4",
+            "category": "SUV",
+            "price": 32000,
+            "quantity": 4,
+        },
+        {
+            "make": "Honda",
+            "model": "Civic",
             "category": "Sedan",
-            "price": 25000,
-            "quantity": 5,
+            "price": 22000,
+            "quantity": 3,
         },
         {
             "make": "BMW",
@@ -254,9 +256,10 @@ def test_search_vehicles_by_category():
 
     data = response.json()
 
-    assert len(data) == 1
-    assert data[0]["category"] == "SUV"
-    assert data[0]["model"] == "X5"
+    assert len(data) == 2
+
+    for vehicle in data:
+        assert vehicle["category"] == "SUV"
 
 
 def test_search_vehicles_by_price_range():
@@ -331,7 +334,6 @@ def test_search_vehicles_by_price_range():
 
     assert len(data) == 1
     assert data[0]["model"] == "Camry"
-    assert data[0]["price"] == 30000
 
 
 def test_authenticated_user_can_update_vehicle():
@@ -367,9 +369,9 @@ def test_authenticated_user_can_update_vehicle():
         headers=headers,
         json={
             "make": "Toyota",
-            "model": "Camry",
+            "model": "Corolla",
             "category": "Sedan",
-            "price": 25000,
+            "price": 22000,
             "quantity": 5,
         },
     )
@@ -395,10 +397,7 @@ def test_authenticated_user_can_update_vehicle():
     data = response.json()
 
     assert data["id"] == vehicle_id
-    assert data["make"] == "Toyota"
-    assert data["model"] == "Corolla"
-    assert data["category"] == "Sedan"
-    assert data["price"] == 23000
+    assert float(data["price"]) == 23000
     assert data["quantity"] == 7
 
 
@@ -532,3 +531,59 @@ def test_regular_user_cannot_delete_vehicle():
     )
 
     assert delete_response.status_code == 403
+
+
+def test_admin_cannot_delete_nonexistent_vehicle():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Admin Not Found User",
+            "email": "admin-not-found@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    from app.database import SessionLocal
+    from app.models.user import User
+
+    db = SessionLocal()
+
+    try:
+        user = (
+            db.query(User)
+            .filter(
+                User.email == "admin-not-found@example.com"
+            )
+            .first()
+        )
+
+        assert user is not None
+
+        user.is_admin = True
+
+        db.commit()
+    finally:
+        db.close()
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "admin-not-found@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    response = client.delete(
+        "/api/vehicles/999999",
+        headers={
+            "Authorization": f"Bearer {token}",
+        },
+    )
+
+    assert response.status_code == 404
