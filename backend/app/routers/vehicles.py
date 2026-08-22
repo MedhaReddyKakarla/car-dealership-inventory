@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies.auth import get_current_user, require_admin
 from app.models.user import User
+from app.models.vehicle import Vehicle
 from app.schemas.vehicle import (
     VehicleCreate,
     VehicleListResponse,
@@ -18,8 +19,6 @@ from app.services.vehicle_service import (
     search_vehicles,
     update_vehicle,
 )
-
-
 router = APIRouter()
 
 
@@ -37,6 +36,7 @@ def create_vehicle_endpoint(
         return create_vehicle(
             db=db,
             vehicle_data=vehicle_data,
+            owner_id=current_user.id,
         )
     except ValueError as exc:
         raise HTTPException(
@@ -125,8 +125,30 @@ def update_vehicle_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    vehicle = (
+        db.query(Vehicle)
+        .filter(Vehicle.id == vehicle_id)
+        .first()
+    )
+
+    if vehicle is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Vehicle not found",
+        )
+
+    if (
+        not current_user.is_admin
+        and vehicle.owner_id is not None
+        and vehicle.owner_id != current_user.id
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission to update this vehicle",
+        )
+
     try:
-        vehicle = update_vehicle(
+        updated_vehicle = update_vehicle(
             db=db,
             vehicle_id=vehicle_id,
             vehicle_data=vehicle_data,
@@ -137,13 +159,7 @@ def update_vehicle_endpoint(
             detail=str(exc),
         )
 
-    if vehicle is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Vehicle not found",
-        )
-
-    return vehicle
+    return updated_vehicle
 
 
 @router.delete(

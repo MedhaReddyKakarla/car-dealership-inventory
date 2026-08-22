@@ -1008,3 +1008,92 @@ def test_duplicate_vehicle_cannot_be_created():
     )
 
     assert second_response.status_code == 400
+
+def test_regular_user_cannot_update_another_users_vehicle():
+    # Create first user
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Vehicle Owner",
+            "email": "vehicle-owner@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "vehicle-owner@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    owner_token = login_response.json()["access_token"]
+
+    owner_headers = {
+        "Authorization": f"Bearer {owner_token}",
+    }
+
+    # Owner creates vehicle
+    create_response = client.post(
+        "/api/vehicles",
+        headers=owner_headers,
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "category": "Sedan",
+            "price": 25000,
+            "quantity": 5,
+        },
+    )
+
+    assert create_response.status_code == 201
+
+    vehicle_id = create_response.json()["id"]
+
+    # Create second user
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Other User",
+            "email": "other-vehicle-user@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "other-vehicle-user@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    other_token = login_response.json()["access_token"]
+
+    other_headers = {
+        "Authorization": f"Bearer {other_token}",
+    }
+
+    # Other user attempts to update owner's vehicle
+    response = client.put(
+        f"/api/vehicles/{vehicle_id}",
+        headers=other_headers,
+        json={
+            "make": "Honda",
+            "model": "Civic",
+            "category": "Sedan",
+            "price": 22000,
+            "quantity": 3,
+        },
+    )
+
+    assert response.status_code == 403

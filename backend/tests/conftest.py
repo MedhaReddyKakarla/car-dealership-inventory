@@ -28,6 +28,8 @@ TEST_EMAILS = {
     "empty-model@example.com",
     "empty-category@example.com",
     "duplicate-vehicle@example.com",
+    "vehicle-owner@example.com",
+    "other-vehicle-user@example.com",
     
 }
 

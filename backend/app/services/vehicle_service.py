@@ -1,12 +1,14 @@
 from sqlalchemy.orm import Session
 
 from app.models.vehicle import Vehicle
+from app.models.user import User
 from app.schemas.vehicle import VehicleCreate, VehicleUpdate
 
 
 def create_vehicle(
     db: Session,
     vehicle_data: VehicleCreate,
+    owner_id: int,
 ) -> Vehicle:
     existing_vehicle = (
         db.query(Vehicle)
@@ -29,6 +31,7 @@ def create_vehicle(
         category=vehicle_data.category,
         price=vehicle_data.price,
         quantity=vehicle_data.quantity,
+        owner_id=owner_id,
     )
 
     db.add(vehicle)
@@ -69,7 +72,11 @@ def get_paginated_vehicles(
         .all()
     )
 
-    pages = (total + limit - 1) // limit if total > 0 else 0
+    pages = (
+        (total + limit - 1) // limit
+        if total > 0
+        else 0
+    )
 
     return vehicles, total, pages
 
