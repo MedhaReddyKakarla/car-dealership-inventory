@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, Numeric, String
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -29,7 +29,7 @@ class Vehicle(Base):
     )
 
     price = Column(
-        Float,
+        Numeric(10, 2),
         nullable=False,
     )
 
