@@ -21,3 +21,14 @@ def create_vehicle(
     db.refresh(vehicle)
 
     return vehicle
+
+
+def get_all_vehicles(
+    db: Session,
+) -> list[Vehicle]:
+    return (
+        db.query(Vehicle)
+        .filter(Vehicle.quantity > 0)
+        .order_by(Vehicle.id)
+        .all()
+    )
