@@ -74,3 +74,31 @@ def test_password_is_stored_as_hash():
         assert user.password_hash.startswith("$argon2")
     finally:
         db.close()
+
+
+def test_login_user():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Login Test User",
+            "email": "login@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "login@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert "access_token" in data
+    assert data["token_type"] == "bearer"
