@@ -47,3 +47,30 @@ def test_register_duplicate_email():
     )
 
     assert second_response.status_code == 400
+
+
+def test_password_is_stored_as_hash():
+    from app.database import SessionLocal
+    from app.models.user import User
+
+    client.post(
+        "/api/auth/register",
+        json={
+            "name": "Hash Test User",
+            "email": "hash@example.com",
+            "password": "Secret123!",
+        },
+    )
+
+    db = SessionLocal()
+
+    try:
+        user = db.query(User).filter(
+            User.email == "hash@example.com"
+        ).first()
+
+        assert user is not None
+        assert user.password_hash != "Secret123!"
+        assert user.password_hash.startswith("$argon2")
+    finally:
+        db.close()
