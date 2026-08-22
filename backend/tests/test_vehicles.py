@@ -587,3 +587,128 @@ def test_admin_cannot_delete_nonexistent_vehicle():
     )
 
     assert response.status_code == 404
+def test_authenticated_user_can_paginate_vehicles():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Pagination Test User",
+            "email": "pagination@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "pagination@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    vehicles = [
+        {
+            "make": "Toyota",
+            "model": "Camry",
+            "category": "Sedan",
+            "price": 25000,
+            "quantity": 5,
+        },
+        {
+            "make": "Honda",
+            "model": "Civic",
+            "category": "Sedan",
+            "price": 22000,
+            "quantity": 3,
+        },
+        {
+            "make": "BMW",
+            "model": "X5",
+            "category": "SUV",
+            "price": 60000,
+            "quantity": 2,
+        },
+        {
+            "make": "Audi",
+            "model": "Q5",
+            "category": "SUV",
+            "price": 55000,
+            "quantity": 4,
+        },
+        {
+            "make": "Ford",
+            "model": "Mustang",
+            "category": "Sports",
+            "price": 45000,
+            "quantity": 2,
+        },
+    ]
+
+    for vehicle in vehicles:
+        response = client.post(
+            "/api/vehicles",
+            headers=headers,
+            json=vehicle,
+        )
+
+        assert response.status_code == 201
+
+    response = client.get(
+        "/api/vehicles?page=1&limit=2",
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert "items" in data
+    assert "page" in data
+    assert "limit" in data
+    assert "total" in data
+    assert "pages" in data
+
+    assert len(data["items"]) == 2
+    assert data["page"] == 1
+    assert data["limit"] == 2
+    assert data["total"] == 5
+    assert data["pages"] == 3
+
+    response = client.get(
+        "/api/vehicles?page=2&limit=2",
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert len(data["items"]) == 2
+    assert data["page"] == 2
+    assert data["limit"] == 2
+    assert data["total"] == 5
+    assert data["pages"] == 3
+
+    response = client.get(
+        "/api/vehicles?page=3&limit=2",
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert len(data["items"]) == 1
+    assert data["page"] == 3
+    assert data["limit"] == 2
+    assert data["total"] == 5
+    assert data["pages"] == 3
