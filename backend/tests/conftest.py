@@ -13,6 +13,10 @@ TEST_EMAILS = {
     "wrong-password@example.com",
     "vehicle@example.com",
     "list@example.com",
+    "search@example.com",
+    "category-search@example.com",
+    "price-search@example.com",
+    "update@example.com",
 }
 
 

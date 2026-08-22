@@ -114,3 +114,289 @@ def test_authenticated_user_can_list_vehicles():
     assert data[0]["category"] == "Sedan"
     assert data[0]["price"] == 22000
     assert data[0]["quantity"] == 3
+
+
+def test_authenticated_user_can_search_vehicles():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Search Test User",
+            "email": "search@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "search@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    vehicles = [
+        {
+            "make": "Toyota",
+            "model": "Camry",
+            "category": "Sedan",
+            "price": 25000,
+            "quantity": 5,
+        },
+        {
+            "make": "Honda",
+            "model": "Civic",
+            "category": "Sedan",
+            "price": 22000,
+            "quantity": 3,
+        },
+        {
+            "make": "BMW",
+            "model": "X5",
+            "category": "SUV",
+            "price": 60000,
+            "quantity": 2,
+        },
+    ]
+
+    for vehicle in vehicles:
+        response = client.post(
+            "/api/vehicles",
+            headers=headers,
+            json=vehicle,
+        )
+
+        assert response.status_code == 201
+
+    response = client.get(
+        "/api/vehicles/search?make=Toyota",
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert len(data) == 1
+    assert data[0]["make"] == "Toyota"
+    assert data[0]["model"] == "Camry"
+
+
+def test_search_vehicles_by_category():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Category Search User",
+            "email": "category-search@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "category-search@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    vehicles = [
+        {
+            "make": "Toyota",
+            "model": "Camry",
+            "category": "Sedan",
+            "price": 25000,
+            "quantity": 5,
+        },
+        {
+            "make": "BMW",
+            "model": "X5",
+            "category": "SUV",
+            "price": 60000,
+            "quantity": 2,
+        },
+    ]
+
+    for vehicle in vehicles:
+        response = client.post(
+            "/api/vehicles",
+            headers=headers,
+            json=vehicle,
+        )
+
+        assert response.status_code == 201
+
+    response = client.get(
+        "/api/vehicles/search?category=SUV",
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert len(data) == 1
+    assert data[0]["category"] == "SUV"
+    assert data[0]["model"] == "X5"
+
+
+def test_search_vehicles_by_price_range():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Price Search User",
+            "email": "price-search@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "price-search@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    vehicles = [
+        {
+            "make": "Toyota",
+            "model": "Corolla",
+            "category": "Sedan",
+            "price": 20000,
+            "quantity": 4,
+        },
+        {
+            "make": "Toyota",
+            "model": "Camry",
+            "category": "Sedan",
+            "price": 30000,
+            "quantity": 3,
+        },
+        {
+            "make": "BMW",
+            "model": "X5",
+            "category": "SUV",
+            "price": 60000,
+            "quantity": 2,
+        },
+    ]
+
+    for vehicle in vehicles:
+        response = client.post(
+            "/api/vehicles",
+            headers=headers,
+            json=vehicle,
+        )
+
+        assert response.status_code == 201
+
+    response = client.get(
+        "/api/vehicles/search?min_price=25000&max_price=35000",
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert len(data) == 1
+    assert data[0]["model"] == "Camry"
+    assert data[0]["price"] == 30000
+
+
+def test_authenticated_user_can_update_vehicle():
+    register_response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Update Test User",
+            "email": "update@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "update@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    create_response = client.post(
+        "/api/vehicles",
+        headers=headers,
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "category": "Sedan",
+            "price": 25000,
+            "quantity": 5,
+        },
+    )
+
+    assert create_response.status_code == 201
+
+    vehicle_id = create_response.json()["id"]
+
+    response = client.put(
+        f"/api/vehicles/{vehicle_id}",
+        headers=headers,
+        json={
+            "make": "Toyota",
+            "model": "Corolla",
+            "category": "Sedan",
+            "price": 23000,
+            "quantity": 7,
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["id"] == vehicle_id
+    assert data["make"] == "Toyota"
+    assert data["model"] == "Corolla"
+    assert data["category"] == "Sedan"
+    assert data["price"] == 23000
+    assert data["quantity"] == 7
