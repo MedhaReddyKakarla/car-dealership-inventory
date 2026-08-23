@@ -1,4 +1,6 @@
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  "http://127.0.0.1:8000";
 
 async function request(endpoint, options = {}) {
   const token = localStorage.getItem("access_token");
@@ -20,7 +22,9 @@ async function request(endpoint, options = {}) {
   if (response.status === 401) {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user");
+
     window.location.href = "/login";
+
     throw new Error("Your session has expired.");
   }
 
@@ -45,9 +49,9 @@ async function request(endpoint, options = {}) {
 }
 
 
-// ---------------------------------------------------------
-// Authentication
-// ---------------------------------------------------------
+// =========================================================
+// AUTHENTICATION
+// =========================================================
 
 export async function registerUser(userData) {
   return request("/api/auth/register", {
@@ -65,9 +69,9 @@ export async function loginUser(credentials) {
 }
 
 
-// ---------------------------------------------------------
-// Vehicles
-// ---------------------------------------------------------
+// =========================================================
+// VEHICLES
+// =========================================================
 
 export async function getVehicles(page = 1, limit = 10) {
   return request(`/api/vehicles?page=${page}&limit=${limit}`, {
@@ -87,18 +91,26 @@ export async function searchVehicles(params = {}) {
     query.append("category", params.category);
   }
 
-  if (params.minPrice !== undefined && params.minPrice !== "") {
+  if (
+    params.minPrice !== undefined &&
+    params.minPrice !== ""
+  ) {
     query.append("min_price", params.minPrice);
   }
 
-  if (params.maxPrice !== undefined && params.maxPrice !== "") {
+  if (
+    params.maxPrice !== undefined &&
+    params.maxPrice !== ""
+  ) {
     query.append("max_price", params.maxPrice);
   }
 
   const queryString = query.toString();
 
   return request(
-    `/api/vehicles/search${queryString ? `?${queryString}` : ""}`,
+    `/api/vehicles/search${
+      queryString ? `?${queryString}` : ""
+    }`,
     {
       method: "GET",
     },
@@ -114,7 +126,10 @@ export async function createVehicle(vehicleData) {
 }
 
 
-export async function updateVehicle(vehicleId, vehicleData) {
+export async function updateVehicle(
+  vehicleId,
+  vehicleData,
+) {
   return request(`/api/vehicles/${vehicleId}`, {
     method: "PUT",
     body: JSON.stringify(vehicleData),
@@ -129,8 +144,13 @@ export async function deleteVehicle(vehicleId) {
 }
 
 
+// =========================================================
+// LOGOUT
+// =========================================================
+
 export function logout() {
   localStorage.removeItem("access_token");
   localStorage.removeItem("user");
+
   window.location.href = "/login";
 }
