@@ -14,6 +14,12 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="Car Dealership Inventory API"
 )
+@app.get("/health")
+def health_check():
+    return {
+        "status": "healthy",
+        "service": "Car Dealership Inventory API",
+    }
 
 
 # =========================================================
