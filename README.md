@@ -1,498 +1,260 @@
 <h1 align="center">VeyraDrive</h1>
 
-
-
 <p align="center">
-
-&#x20; <strong>Car Dealership Inventory Management System</strong>
-
+  <strong>Car Dealership Inventory Management System</strong>
 </p>
 
-
-
 <p align="center">
-
-&#x20; Full-stack web application for managing vehicle inventory, purchases,
-
-&#x20; stock levels, authentication, and administrative operations.
-
+  Full-stack web application for managing vehicle inventory, purchases,
+  stock levels, authentication, and administrative operations.
 </p>
 
-
-
 <p align="center">
-
-&#x20; <a href="https://car-dealership-frontend-jvvk.onrender.com/">Live Demo</a>
-
-&#x20; \&nbsp; • \&nbsp;
-
-&#x20; <a href="https://car-dealership-api-ab6n.onrender.com/docs">API Documentation</a>
-
-&#x20; \&nbsp; • \&nbsp;
-
-&#x20; <a href="https://drive.google.com/file/d/1R6y4OwZA6g4P16\_POnQJg5ZSlsl3oS2U/view?usp=sharing">Demo Video</a>
-
+  <a href="https://car-dealership-frontend-jvvk.onrender.com/">Live Demo</a>
+  &nbsp; • &nbsp;
+  <a href="https://car-dealership-api-ab6n.onrender.com/docs">API Documentation</a>
+  &nbsp; • &nbsp;
+  <a href="C:\Users\medha\Videos\Screen Recordings\Car_Inventory - Demo_Video.mp4">Demo Video</a>
+  &nbsp; • &nbsp;
+  
 </p>
-
-
 
 <hr>
-
-
 
 <h2>Overview</h2>
 
-
-
 <p>
-
-&#x20; VeyraDrive is a full-stack car dealership inventory management system
-
-&#x20; built with React, FastAPI, PostgreSQL, SQLAlchemy, and JWT authentication.
-
+VeyraDrive is a full-stack car dealership inventory management system
+built with React, FastAPI, PostgreSQL, SQLAlchemy, and JWT authentication.
 </p>
 
-
-
 <p>
-
-&#x20; The application provides authenticated users with vehicle management,
-
-&#x20; inventory search and filtering, vehicle purchasing, stock tracking,
-
-&#x20; and role-based administrative operations.
-
+The application allows authenticated users to manage vehicles, search and
+filter inventory, purchase vehicles, track stock levels, and perform
+role-based administrative operations.
 </p>
-
-
 
 <h2>Key Features</h2>
 
-
-
 <ul>
-
-&#x20; <li>JWT-based user authentication</li>
-
-&#x20; <li>Role-based authorization with admin access control</li>
-
-&#x20; <li>Create, view, update, and delete vehicles</li>
-
-&#x20; <li>Vehicle search and category filtering</li>
-
-&#x20; <li>Price range filtering</li>
-
-&#x20; <li>Vehicle purchase with automatic stock reduction</li>
-
-&#x20; <li>Out-of-stock protection</li>
-
-&#x20; <li>Admin-only vehicle restocking</li>
-
-&#x20; <li>Protected REST API endpoints</li>
-
-&#x20; <li>Automatic inventory refresh after stock changes</li>
-
+  <li>JWT-based user authentication</li>
+  <li>Role-based authorization with admin access control</li>
+  <li>Create, view, update, and delete vehicles</li>
+  <li>Vehicle search and category filtering</li>
+  <li>Minimum and maximum price filtering</li>
+  <li>Vehicle purchase with automatic stock reduction</li>
+  <li>Out-of-stock protection</li>
+  <li>Admin-only vehicle restocking</li>
+  <li>Protected REST API endpoints</li>
+  <li>Automatic inventory refresh after stock changes</li>
 </ul>
-
-
 
 <h2>Technology Stack</h2>
 
-
-
 <table>
-
-&#x20; <tr>
-
-&#x20;   <th>Layer</th>
-
-&#x20;   <th>Technology</th>
-
-&#x20; </tr>
-
-&#x20; <tr>
-
-&#x20;   <td>Frontend</td>
-
-&#x20;   <td>React, Vite, JavaScript, CSS</td>
-
-&#x20; </tr>
-
-&#x20; <tr>
-
-&#x20;   <td>Backend</td>
-
-&#x20;   <td>Python, FastAPI</td>
-
-&#x20; </tr>
-
-&#x20; <tr>
-
-&#x20;   <td>Database</td>
-
-&#x20;   <td>PostgreSQL</td>
-
-&#x20; </tr>
-
-&#x20; <tr>
-
-&#x20;   <td>ORM</td>
-
-&#x20;   <td>SQLAlchemy</td>
-
-&#x20; </tr>
-
-&#x20; <tr>
-
-&#x20;   <td>Authentication</td>
-
-&#x20;   <td>JWT</td>
-
-&#x20; </tr>
-
-&#x20; <tr>
-
-&#x20;   <td>Testing</td>
-
-&#x20;   <td>Pytest</td>
-
-&#x20; </tr>
-
-&#x20; <tr>
-
-&#x20;   <td>Deployment</td>
-
-&#x20;   <td>Render</td>
-
-&#x20; </tr>
-
-&#x20; <tr>
-
-&#x20;   <td>Version Control</td>
-
-&#x20;   <td>Git, GitHub</td>
-
-&#x20; </tr>
-
+  <tr>
+    <th>Layer</th>
+    <th>Technology</th>
+  </tr>
+  <tr>
+    <td>Frontend</td>
+    <td>React, Vite, JavaScript, CSS</td>
+  </tr>
+  <tr>
+    <td>Backend</td>
+    <td>Python, FastAPI</td>
+  </tr>
+  <tr>
+    <td>Database</td>
+    <td>PostgreSQL</td>
+  </tr>
+  <tr>
+    <td>ORM</td>
+    <td>SQLAlchemy</td>
+  </tr>
+  <tr>
+    <td>Authentication</td>
+    <td>JWT</td>
+  </tr>
+  <tr>
+    <td>Testing</td>
+    <td>Pytest</td>
+  </tr>
+  <tr>
+    <td>Deployment</td>
+    <td>Render</td>
+  </tr>
+  <tr>
+    <td>Version Control</td>
+    <td>Git, GitHub</td>
+  </tr>
 </table>
 
-
-
-<h2>Authentication \& Authorization</h2>
-
-
+<h2>Authentication & Authorization</h2>
 
 <p>
-
-&#x20; Authentication is implemented using JWT access tokens. Protected API
-
-&#x20; requests require a valid bearer token.
-
+Authentication is implemented using JWT access tokens. Protected API
+requests require a valid bearer token.
 </p>
 
-
-
 <ul>
-
-&#x20; <li>
-
-&#x20;   <strong>Users:</strong> View, search, purchase, and manage permitted vehicles
-
-&#x20; </li>
-
-&#x20; <li>
-
-&#x20;   <strong>Administrators:</strong> Additional access to vehicle restocking
-
-&#x20;   and deletion operations
-
-&#x20; </li>
-
+  <li>
+    <strong>Users:</strong> View inventory, search vehicles, purchase vehicles,
+    and manage vehicles according to their permissions.
+  </li>
+  <li>
+    <strong>Administrators:</strong> Additional access to vehicle restocking,
+    deletion, and administrative inventory operations.
+  </li>
 </ul>
 
-
-
-<h2>Inventory Operations</h2>
-
-
+<h2>Inventory Management</h2>
 
 <p>
-
-&#x20; The system supports the complete inventory lifecycle:
-
+The system supports the complete inventory lifecycle including adding,
+updating, purchasing, restocking, and removing vehicles.
 </p>
 
-
-
 <ul>
-
-&#x20; <li>Add new vehicles to inventory</li>
-
-&#x20; <li>Update vehicle information and stock quantity</li>
-
-&#x20; <li>Purchase vehicles and automatically decrease stock</li>
-
-&#x20; <li>Prevent purchases when stock reaches zero</li>
-
-&#x20; <li>Restock vehicles through admin-only operations</li>
-
-&#x20; <li>Delete vehicles through authorized administrative operations</li>
-
+  <li>Vehicle quantity decreases automatically after purchase.</li>
+  <li>Purchases are prevented when inventory reaches zero.</li>
+  <li>Administrators can increase stock through restocking.</li>
+  <li>Inventory is refreshed automatically after stock changes.</li>
 </ul>
-
-
 
 <h2>Cloud Deployment</h2>
 
-
-
 <p>
-
-&#x20; The application is deployed on Render using separate frontend and backend
-
-&#x20; services.
-
+The application is deployed on Render using separate frontend and backend
+services.
 </p>
 
-
-
 <p>
-
-&#x20; <strong>Frontend:</strong><br>
-
-&#x20; <a href="https://car-dealership-frontend-jvvk.onrender.com/">
-
-&#x20;   Live Application
-
-&#x20; </a>
-
+<strong>Frontend</strong><br>
+<a href="https://car-dealership-frontend-jvvk.onrender.com/">
+Live Application
+</a>
 </p>
 
-
-
 <p>
-
-&#x20; <strong>Backend API:</strong><br>
-
-&#x20; <a href="https://car-dealership-api-ab6n.onrender.com/">
-
-&#x20;   Backend Service
-
-&#x20; </a>
-
+<strong>Backend API</strong><br>
+<a href="https://car-dealership-api-ab6n.onrender.com/">
+Backend Service
+</a>
 </p>
 
-
-
 <p>
-
-&#x20; <strong>Swagger Documentation:</strong><br>
-
-&#x20; <a href="https://car-dealership-api-ab6n.onrender.com/docs">
-
-&#x20;   API Documentation
-
-&#x20; </a>
-
+<strong>Swagger API Documentation</strong><br>
+<a href="https://car-dealership-api-ab6n.onrender.com/docs">
+API Documentation
+</a>
 </p>
 
-
-
 <p>
-
-&#x20; The backend connects to PostgreSQL through the
-
-&#x20; <code>DATABASE\_URL</code> environment variable. Database credentials,
-
-&#x20; JWT secrets, and other sensitive configuration are kept outside the
-
-&#x20; source code.
-
+The backend uses the <code>DATABASE_URL</code> environment variable for
+PostgreSQL database connectivity. Database credentials, JWT secrets,
+and other sensitive configuration are kept outside the source code.
 </p>
-
-
 
 <h2>Testing</h2>
 
-
-
 <p>
-
-&#x20; The backend includes automated tests using Pytest.
-
+The backend includes automated tests using Pytest.
 </p>
 
-
-
 <p>
-
-&#x20; <strong>28 tests passed</strong>
-
+<strong>Test Result: 28 tests passed</strong>
 </p>
 
-
-
 <p>
-
-&#x20; Tests cover authentication, vehicle operations, authorization,
-
-&#x20; purchasing, stock validation, and administrative restocking.
-
+The test suite covers authentication, vehicle operations, authorization,
+purchase behaviour, stock validation, and administrative restocking.
 </p>
 
-
-
 <p>
-
-&#x20; Test output is available in
-
-&#x20; <code>backend/test-report.txt</code>.
-
+Test output:
+<code>backend/test-report.txt</code>
 </p>
-
-
 
 <h2>Demo Video</h2>
 
-
-
 <p>
-
-&#x20; <a href="https://drive.google.com/file/d/1R6y4OwZA6g4P16\_POnQJg5ZSlsl3oS2U/view?usp=sharing">
-
-&#x20;   Watch the project demonstration
-
-&#x20; </a>
-
+The project demonstration covers authentication, vehicle inventory
+management, purchasing, stock updates, and administrative restocking.
 </p>
 
-
-
 <p>
-
-&#x20; The demonstration covers authentication, vehicle inventory management,
-
-&#x20; purchasing, stock updates, and administrative restocking.
-
+<strong>Demo Video Path:</strong>
 </p>
 
+<pre>
+"C:\Users\medha\Videos\Screen Recordings\Car_Inventory - Demo_Video.mp4"
+</pre>
 
+<p>
+Example:
+</p>
+
+<pre>
+C:\Users\medha\Videos\VeyraDrive_Demo.mp4
+</pre>
 
 <h2>Project Structure</h2>
 
-
-
 <pre>
-
 car-dealership-inventory/
-
 ├── backend/
-
 │   ├── app/
-
 │   │   ├── models/
-
 │   │   ├── routers/
-
 │   │   ├── schemas/
-
 │   │   ├── services/
-
 │   │   └── dependencies/
-
 │   └── tests/
-
 ├── frontend/
-
 │   └── src/
-
 │       ├── components/
-
 │       ├── pages/
-
 │       └── services/
-
 ├── PROMPTS.md
-
 ├── README.md
-
 └── docker-compose.yml
-
 </pre>
-
-
 
 <h2>Local Development</h2>
 
-
-
-<strong>Backend</strong>
-
-
+<p><strong>Backend</strong></p>
 
 <pre>
-
 cd backend
-
-venv\\Scripts\\activate
-
+venv\Scripts\activate
 python -m uvicorn app.main:app --reload
-
 </pre>
 
-
-
-<strong>Frontend</strong>
-
-
+<p><strong>Frontend</strong></p>
 
 <pre>
-
 cd frontend
-
 npm install
-
 npm run dev
-
 </pre>
 
-
-
-<strong>Run Tests</strong>
-
-
+<p><strong>Run Tests</strong></p>
 
 <pre>
-
 cd backend
-
 python -m pytest -q
-
 </pre>
 
-
-
-<strong>Build Frontend</strong>
-
-
+<p><strong>Build Frontend</strong></p>
 
 <pre>
-
 cd frontend
-
 npm run build
-
 </pre>
-
-
 
 <hr>
 
-
-
 <p align="center">
-
-&#x20; <strong>VeyraDrive — Full-Stack Vehicle Inventory Management</strong>
-
+  <strong>VeyraDrive — Full-Stack Vehicle Inventory Management</strong>
 </p>
-
