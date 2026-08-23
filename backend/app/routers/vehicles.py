@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -18,12 +19,26 @@ from app.services.vehicle_service import (
     delete_vehicle,
     get_all_vehicles,
     get_paginated_vehicles,
+    purchase_vehicle,
+    restock_vehicle,
     search_vehicles,
     update_vehicle,
 )
 
 
 router = APIRouter()
+
+
+# =========================================================
+# REQUEST SCHEMAS
+# =========================================================
+
+class RestockRequest(BaseModel):
+    quantity: int = Field(
+        ...,
+        gt=0,
+        description="Number of vehicles to add to inventory",
+    )
 
 
 # =========================================================
@@ -130,6 +145,78 @@ def search_vehicle_endpoint(
         min_price=min_price,
         max_price=max_price,
     )
+
+
+# =========================================================
+# PURCHASE VEHICLE
+# =========================================================
+
+@router.post(
+    "/{vehicle_id}/purchase",
+    response_model=VehicleResponse,
+    status_code=status.HTTP_200_OK,
+)
+def purchase_vehicle_endpoint(
+    vehicle_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    try:
+        vehicle = purchase_vehicle(
+            db=db,
+            vehicle_id=vehicle_id,
+        )
+
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )
+
+    if vehicle is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Vehicle not found",
+        )
+
+    return vehicle
+
+
+# =========================================================
+# RESTOCK VEHICLE
+# =========================================================
+
+@router.post(
+    "/{vehicle_id}/restock",
+    response_model=VehicleResponse,
+    status_code=status.HTTP_200_OK,
+)
+def restock_vehicle_endpoint(
+    vehicle_id: int,
+    restock_data: RestockRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin),
+):
+    try:
+        vehicle = restock_vehicle(
+            db=db,
+            vehicle_id=vehicle_id,
+            quantity=restock_data.quantity,
+        )
+
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )
+
+    if vehicle is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Vehicle not found",
+        )
+
+    return vehicle
 
 
 # =========================================================

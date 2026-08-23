@@ -182,3 +182,52 @@ def delete_vehicle(
     db.commit()
 
     return True
+
+
+def purchase_vehicle(
+    db: Session,
+    vehicle_id: int,
+) -> Vehicle | None:
+    vehicle = (
+        db.query(Vehicle)
+        .filter(Vehicle.id == vehicle_id)
+        .first()
+    )
+
+    if vehicle is None:
+        return None
+
+    if vehicle.quantity <= 0:
+        raise ValueError("Vehicle is out of stock")
+
+    vehicle.quantity -= 1
+
+    db.commit()
+    db.refresh(vehicle)
+
+    return vehicle
+
+
+def restock_vehicle(
+    db: Session,
+    vehicle_id: int,
+    quantity: int,
+) -> Vehicle | None:
+    vehicle = (
+        db.query(Vehicle)
+        .filter(Vehicle.id == vehicle_id)
+        .first()
+    )
+
+    if vehicle is None:
+        return None
+
+    if quantity <= 0:
+        raise ValueError("Restock quantity must be greater than zero")
+
+    vehicle.quantity += quantity
+
+    db.commit()
+    db.refresh(vehicle)
+
+    return vehicle

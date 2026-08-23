@@ -30,6 +30,10 @@ TEST_EMAILS = {
     "duplicate-vehicle@example.com",
     "vehicle-owner@example.com",
     "other-vehicle-user@example.com",
+    "purchase@example.com",
+    "out-of-stock@example.com",
+    "restock-admin@example.com",
+    "regular-restock@example.com",
     
 }
 
