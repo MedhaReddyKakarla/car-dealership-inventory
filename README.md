@@ -14,9 +14,7 @@
   &nbsp; • &nbsp;
   <a href="https://car-dealership-api-ab6n.onrender.com/docs">API Documentation</a>
   &nbsp; • &nbsp;
-  <a href="C:\Users\medha\Videos\Screen Recordings\Car_Inventory - Demo_Video.mp4">Demo Video</a>
-  &nbsp; • &nbsp;
-  
+  <a href="https://youtu.be/ALBwLfQwyg4">Demo Video</a>
 </p>
 
 <hr>
@@ -132,21 +130,21 @@ services.
 <p>
 <strong>Frontend</strong><br>
 <a href="https://car-dealership-frontend-jvvk.onrender.com/">
-Live Application
+https://car-dealership-frontend-jvvk.onrender.com/
 </a>
 </p>
 
 <p>
 <strong>Backend API</strong><br>
 <a href="https://car-dealership-api-ab6n.onrender.com/">
-Backend Service
+https://car-dealership-api-ab6n.onrender.com/
 </a>
 </p>
 
 <p>
 <strong>Swagger API Documentation</strong><br>
 <a href="https://car-dealership-api-ab6n.onrender.com/docs">
-API Documentation
+https://car-dealership-api-ab6n.onrender.com/docs
 </a>
 </p>
 
@@ -184,19 +182,18 @@ management, purchasing, stock updates, and administrative restocking.
 </p>
 
 <p>
-<strong>Demo Video Path:</strong>
+<strong>Watch the Demo:</strong>
+<a href="https://youtu.be/ALBwLfQwyg4">
+VeyraDrive Project Demonstration
+</a>
+</p>
+
+<p>
+<strong>Local Demo Video Path:</strong>
 </p>
 
 <pre>
 "C:\Users\medha\Videos\Screen Recordings\Car_Inventory - Demo_Video.mp4"
-</pre>
-
-<p>
-Example:
-</p>
-
-<pre>
-C:\Users\medha\Videos\VeyraDrive_Demo.mp4
 </pre>
 
 <h2>Project Structure</h2>
