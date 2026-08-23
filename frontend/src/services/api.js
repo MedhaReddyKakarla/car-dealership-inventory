@@ -137,6 +137,21 @@ export async function updateVehicle(
 }
 
 
+// =========================================================
+// PURCHASE
+// =========================================================
+
+export async function purchaseVehicle(vehicleId) {
+  return request(`/api/vehicles/${vehicleId}/purchase`, {
+    method: "POST",
+  });
+}
+
+
+// =========================================================
+// DELETE
+// =========================================================
+
 export async function deleteVehicle(vehicleId) {
   return request(`/api/vehicles/${vehicleId}`, {
     method: "DELETE",

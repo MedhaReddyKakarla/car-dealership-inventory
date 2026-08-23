@@ -22,6 +22,7 @@ import {
   createVehicle,
   deleteVehicle,
   getVehicles,
+  purchaseVehicle,
   updateVehicle,
 } from "../services/api";
 
@@ -127,6 +128,7 @@ function VehicleCard({
   vehicle,
   onEdit,
   onDelete,
+  onPurchase,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -155,6 +157,7 @@ function VehicleCard({
       <div className="vehicle-card-body">
 
         <div className="vehicle-card-heading">
+
           <div>
             <span className="vehicle-eyebrow">
               {vehicle.category || "VEHICLE"}
@@ -208,7 +211,9 @@ function VehicleCard({
 
               </div>
             )}
+
           </div>
+
         </div>
 
         <div className="vehicle-price">
@@ -240,7 +245,23 @@ function VehicleCard({
 
         </div>
 
+        <div className="vehicle-purchase-action">
+
+          <button
+            type="button"
+            className="primary-button"
+            onClick={() => onPurchase(vehicle)}
+            disabled={quantity === 0}
+          >
+            {quantity === 0
+              ? "Out of Stock"
+              : "Purchase"}
+          </button>
+
+        </div>
+
       </div>
+
     </article>
   );
 }
@@ -346,6 +367,7 @@ function VehicleModal({
         }
       }}
     >
+
       <div className="vehicle-modal">
 
         <div className="vehicle-modal-header">
@@ -493,7 +515,9 @@ function VehicleModal({
           </div>
 
         </form>
+
       </div>
+
     </div>
   );
 }
@@ -534,6 +558,7 @@ function Inventory() {
     user = null;
   }
 
+
   // -------------------------------------------------------
   // Load inventory
   // -------------------------------------------------------
@@ -568,6 +593,7 @@ function Inventory() {
     loadVehicles();
   }, []);
 
+
   // -------------------------------------------------------
   // Read search from URL
   // -------------------------------------------------------
@@ -582,6 +608,7 @@ function Inventory() {
 
     setSearch(query);
   }, [location.search]);
+
 
   // -------------------------------------------------------
   // Categories
@@ -601,6 +628,7 @@ function Inventory() {
       ...Array.from(unique),
     ];
   }, [vehicles]);
+
 
   // -------------------------------------------------------
   // Filter
@@ -641,6 +669,7 @@ function Inventory() {
     category,
   ]);
 
+
   const totalUnits = useMemo(
     () =>
       filteredVehicles.reduce(
@@ -651,6 +680,7 @@ function Inventory() {
       ),
     [filteredVehicles],
   );
+
 
   // -------------------------------------------------------
   // Search
@@ -680,6 +710,7 @@ function Inventory() {
     );
   }
 
+
   // -------------------------------------------------------
   // Delete
   // -------------------------------------------------------
@@ -696,6 +727,7 @@ function Inventory() {
     try {
       await deleteVehicle(vehicle.id);
       await loadVehicles();
+
     } catch (err) {
       setError(
         err.message ||
@@ -703,6 +735,32 @@ function Inventory() {
       );
     }
   }
+
+
+  // -------------------------------------------------------
+  // Purchase
+  // -------------------------------------------------------
+
+  async function handlePurchase(vehicle) {
+    if (Number(vehicle.quantity || 0) <= 0) {
+      return;
+    }
+
+    try {
+      setError("");
+
+      await purchaseVehicle(vehicle.id);
+
+      await loadVehicles();
+
+    } catch (err) {
+      setError(
+        err.message ||
+          "Unable to purchase vehicle.",
+      );
+    }
+  }
+
 
   // -------------------------------------------------------
   // Render
@@ -738,6 +796,7 @@ function Inventory() {
             <div className="inventory-heading-row">
 
               <div>
+
                 <div className="hero-eyebrow">
                   <CarFront size={16} />
                   INVENTORY MANAGEMENT
@@ -751,6 +810,7 @@ function Inventory() {
                   Manage every vehicle in
                   your dealership inventory.
                 </p>
+
               </div>
 
               <button
@@ -765,10 +825,13 @@ function Inventory() {
               </button>
 
             </div>
+
           </div>
+
 
           {error && (
             <div className="dashboard-error">
+
               <div>
                 <strong>
                   Unable to load inventory
@@ -784,8 +847,10 @@ function Inventory() {
                 <RefreshCw size={16} />
                 Retry
               </button>
+
             </div>
           )}
+
 
           {/* SEARCH BAR */}
 
@@ -798,6 +863,7 @@ function Inventory() {
                   : ""
               }`}
             >
+
               <Search size={21} />
 
               <input
@@ -813,19 +879,23 @@ function Inventory() {
                   className="inventory-search-clear"
                   onClick={() => {
                     setSearch("");
+
                     navigate(
                       "/inventory",
                       {
                         replace: true,
                       },
                     );
+
                     searchRef.current?.focus();
                   }}
                 >
                   <X size={16} />
                 </button>
               )}
+
             </div>
+
 
             {/* CUSTOM CATEGORY */}
 
@@ -844,6 +914,7 @@ function Inventory() {
                   )
                 }
               >
+
                 <span className="category-filter-label">
                   {category}
                 </span>
@@ -856,6 +927,7 @@ function Inventory() {
                       : ""
                   }
                 />
+
               </button>
 
               {categoryOpen && (
@@ -878,6 +950,7 @@ function Inventory() {
                           );
                         }}
                       >
+
                         <span>
                           {item}
                         </span>
@@ -888,13 +961,16 @@ function Inventory() {
                             size={16}
                           />
                         )}
+
                       </button>
                     ),
                   )}
 
                 </div>
               )}
+
             </div>
+
 
             <button
               type="button"
@@ -915,11 +991,13 @@ function Inventory() {
 
           </section>
 
+
           {/* SUMMARY */}
 
           <section className="inventory-summary">
 
             <div>
+
               <strong>
                 <AnimatedNumber
                   value={
@@ -931,9 +1009,11 @@ function Inventory() {
               <span>
                 vehicles displayed
               </span>
+
             </div>
 
             <div>
+
               <strong>
                 <AnimatedNumber
                   value={totalUnits}
@@ -943,13 +1023,16 @@ function Inventory() {
               <span>
                 total units
               </span>
+
             </div>
 
           </section>
 
+
           {/* VEHICLES */}
 
           {loading ? (
+
             <div className="premium-vehicle-grid">
 
               {[1, 2, 3].map(
@@ -962,8 +1045,10 @@ function Inventory() {
               )}
 
             </div>
+
           ) : filteredVehicles.length ===
             0 ? (
+
             <div className="premium-empty-state">
 
               <div className="empty-icon">
@@ -991,11 +1076,14 @@ function Inventory() {
               </button>
 
             </div>
+
           ) : (
+
             <div className="premium-vehicle-grid">
 
               {filteredVehicles.map(
                 (vehicle, index) => (
+
                   <div
                     className="vehicle-card-enter"
                     style={{
@@ -1005,27 +1093,39 @@ function Inventory() {
                     }}
                     key={vehicle.id}
                   >
+
                     <VehicleCard
                       vehicle={vehicle}
+
                       onEdit={
                         (item) =>
                           setModalVehicle(
                             item,
                           )
                       }
+
                       onDelete={
                         handleDelete
                       }
+
+                      onPurchase={
+                        handlePurchase
+                      }
                     />
+
                   </div>
+
                 ),
               )}
 
             </div>
+
           )}
 
         </div>
+
       </main>
+
 
       {/* MODAL */}
 
@@ -1036,9 +1136,11 @@ function Inventory() {
               ? modalVehicle
               : null
           }
+
           onClose={() =>
             setModalVehicle(null)
           }
+
           onSaved={loadVehicles}
         />
       )}
@@ -1046,5 +1148,6 @@ function Inventory() {
     </div>
   );
 }
+
 
 export default Inventory;
