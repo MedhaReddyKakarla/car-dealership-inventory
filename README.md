@@ -12,9 +12,9 @@
 
 <p align="center">
 
-&#x20; Full-stack web application for managing vehicle inventory,
+&#x20; Full-stack web application for managing vehicle inventory, purchases,
 
-&#x20; purchases, stock levels, and administrative operations.
+&#x20; stock levels, authentication, and administrative operations.
 
 </p>
 
@@ -22,27 +22,15 @@
 
 <p align="center">
 
-&#x20; <a href="https://car-dealership-frontend-jvvk.onrender.com/">
-
-&#x20;   Live Demo
-
-&#x20; </a>
+&#x20; <a href="https://car-dealership-frontend-jvvk.onrender.com/">Live Demo</a>
 
 &#x20; \&nbsp; • \&nbsp;
 
-&#x20; <a href="https://car-dealership-api-ab6n.onrender.com/docs">
-
-&#x20;   API Documentation
-
-&#x20; </a>
+&#x20; <a href="https://car-dealership-api-ab6n.onrender.com/docs">API Documentation</a>
 
 &#x20; \&nbsp; • \&nbsp;
 
-&#x20; <a href="https://drive.google.com/file/d/1R6y4OwZA6g4P16\_POnQJg5ZSlsl3oS2U/view?usp=sharing">
-
-&#x20;   Demo Video
-
-&#x20; </a>
+&#x20; <a href="https://drive.google.com/file/d/1R6y4OwZA6g4P16\_POnQJg5ZSlsl3oS2U/view?usp=sharing">Demo Video</a>
 
 </p>
 
@@ -68,11 +56,11 @@
 
 <p>
 
-&#x20; The application allows authenticated users to manage vehicles, search and
+&#x20; The application provides authenticated users with vehicle management,
 
-&#x20; filter inventory, purchase vehicles, and perform stock operations based on
+&#x20; inventory search and filtering, vehicle purchasing, stock tracking,
 
-&#x20; their assigned permissions.
+&#x20; and role-based administrative operations.
 
 </p>
 
@@ -84,13 +72,13 @@
 
 <ul>
 
-&#x20; <li>JWT-based authentication</li>
+&#x20; <li>JWT-based user authentication</li>
 
-&#x20; <li>Role-based authorization and admin access control</li>
+&#x20; <li>Role-based authorization with admin access control</li>
 
-&#x20; <li>Create, view, update, and delete vehicle records</li>
+&#x20; <li>Create, view, update, and delete vehicles</li>
 
-&#x20; <li>Vehicle search and category-based filtering</li>
+&#x20; <li>Vehicle search and category filtering</li>
 
 &#x20; <li>Price range filtering</li>
 
@@ -204,11 +192,33 @@
 
 
 
+<ul>
+
+&#x20; <li>
+
+&#x20;   <strong>Users:</strong> View, search, purchase, and manage permitted vehicles
+
+&#x20; </li>
+
+&#x20; <li>
+
+&#x20;   <strong>Administrators:</strong> Additional access to vehicle restocking
+
+&#x20;   and deletion operations
+
+&#x20; </li>
+
+</ul>
+
+
+
+<h2>Inventory Operations</h2>
+
+
+
 <p>
 
-&#x20; The application also implements role-based authorization for administrative
-
-&#x20; inventory operations.
+&#x20; The system supports the complete inventory lifecycle:
 
 </p>
 
@@ -216,37 +226,19 @@
 
 <ul>
 
-&#x20; <li><strong>Users:</strong> View, search, purchase, and manage permitted vehicles</li>
+&#x20; <li>Add new vehicles to inventory</li>
 
-&#x20; <li><strong>Administrators:</strong> Additional access to restocking and deletion operations</li>
+&#x20; <li>Update vehicle information and stock quantity</li>
+
+&#x20; <li>Purchase vehicles and automatically decrease stock</li>
+
+&#x20; <li>Prevent purchases when stock reaches zero</li>
+
+&#x20; <li>Restock vehicles through admin-only operations</li>
+
+&#x20; <li>Delete vehicles through authorized administrative operations</li>
 
 </ul>
-
-
-
-<h2>Inventory Management</h2>
-
-
-
-<p>
-
-&#x20; Vehicle inventory supports the complete lifecycle of adding, updating,
-
-&#x20; purchasing, restocking, and removing vehicles.
-
-</p>
-
-
-
-<p>
-
-&#x20; Purchasing decreases the available quantity and prevents purchases when
-
-&#x20; inventory reaches zero. Restocking increases inventory and is restricted
-
-&#x20; to administrators.
-
-</p>
 
 
 
@@ -256,7 +248,7 @@
 
 <p>
 
-&#x20; The application is deployed on Render with separate frontend and backend
+&#x20; The application is deployed on Render using separate frontend and backend
 
 &#x20; services.
 
@@ -266,11 +258,11 @@
 
 <p>
 
-&#x20; <strong>Frontend</strong><br>
+&#x20; <strong>Frontend:</strong><br>
 
 &#x20; <a href="https://car-dealership-frontend-jvvk.onrender.com/">
 
-&#x20;   https://car-dealership-frontend-jvvk.onrender.com/
+&#x20;   Live Application
 
 &#x20; </a>
 
@@ -280,11 +272,11 @@
 
 <p>
 
-&#x20; <strong>Backend API</strong><br>
+&#x20; <strong>Backend API:</strong><br>
 
 &#x20; <a href="https://car-dealership-api-ab6n.onrender.com/">
 
-&#x20;   https://car-dealership-api-ab6n.onrender.com/
+&#x20;   Backend Service
 
 &#x20; </a>
 
@@ -294,11 +286,11 @@
 
 <p>
 
-&#x20; <strong>Swagger API Documentation</strong><br>
+&#x20; <strong>Swagger Documentation:</strong><br>
 
 &#x20; <a href="https://car-dealership-api-ab6n.onrender.com/docs">
 
-&#x20;   https://car-dealership-api-ab6n.onrender.com/docs
+&#x20;   API Documentation
 
 &#x20; </a>
 
@@ -308,11 +300,13 @@
 
 <p>
 
-&#x20; The backend uses the <code>DATABASE\_URL</code> environment variable for
+&#x20; The backend connects to PostgreSQL through the
 
-&#x20; database connectivity. Database credentials and application secrets are
+&#x20; <code>DATABASE\_URL</code> environment variable. Database credentials,
 
-&#x20; stored outside the source code.
+&#x20; JWT secrets, and other sensitive configuration are kept outside the
+
+&#x20; source code.
 
 </p>
 
@@ -324,7 +318,7 @@
 
 <p>
 
-&#x20; The backend is tested using Pytest.
+&#x20; The backend includes automated tests using Pytest.
 
 </p>
 
@@ -332,7 +326,7 @@
 
 <p>
 
-&#x20; <strong>Current result: 28 tests passed</strong>
+&#x20; <strong>28 tests passed</strong>
 
 </p>
 
@@ -342,7 +336,7 @@
 
 &#x20; Tests cover authentication, vehicle operations, authorization,
 
-&#x20; purchase behaviour, stock validation, and administrative restocking.
+&#x20; purchasing, stock validation, and administrative restocking.
 
 </p>
 
@@ -350,9 +344,9 @@
 
 <p>
 
-&#x20; Test output:
+&#x20; Test output is available in
 
-&#x20; <code>backend/test-report.txt</code>
+&#x20; <code>backend/test-report.txt</code>.
 
 </p>
 
@@ -366,7 +360,7 @@
 
 &#x20; <a href="https://drive.google.com/file/d/1R6y4OwZA6g4P16\_POnQJg5ZSlsl3oS2U/view?usp=sharing">
 
-&#x20;   Open project demonstration video
+&#x20;   Watch the project demonstration
 
 &#x20; </a>
 
@@ -376,25 +370,15 @@
 
 <p>
 
-&#x20; The demonstration covers authentication, inventory management,
+&#x20; The demonstration covers authentication, vehicle inventory management,
 
-&#x20; vehicle purchase, stock updates, and administrative restocking.
+&#x20; purchasing, stock updates, and administrative restocking.
 
 </p>
 
 
 
 <h2>Project Structure</h2>
-
-
-
-<p>
-
-&#x20; The project is organized into separate frontend, backend, testing,
-
-&#x20; and deployment configuration components.
-
-</p>
 
 
 
@@ -406,11 +390,27 @@ car-dealership-inventory/
 
 │   ├── app/
 
+│   │   ├── models/
+
+│   │   ├── routers/
+
+│   │   ├── schemas/
+
+│   │   ├── services/
+
+│   │   └── dependencies/
+
 │   └── tests/
 
 ├── frontend/
 
 │   └── src/
+
+│       ├── components/
+
+│       ├── pages/
+
+│       └── services/
 
 ├── PROMPTS.md
 
