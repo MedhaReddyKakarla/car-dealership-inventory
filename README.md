@@ -174,6 +174,50 @@ Test output:
 <code>backend/test-report.txt</code>
 </p>
 
+<h2>My AI Usage</h2>
+
+<p>
+I used <strong>ChatGPT</strong> as a development assistant during this project.
+</p>
+
+<ul>
+  <li>
+    Used ChatGPT to brainstorm and refine application features and
+    frontend-backend structure.
+  </li>
+  <li>
+    Used it to understand and debug issues involving FastAPI, React,
+    authentication, database operations, and API integration.
+  </li>
+  <li>
+    Used it to troubleshoot JWT authentication, login/session issues,
+    and deployment-related problems.
+  </li>
+  <li>
+    Used it to review and refine test cases for vehicle purchase,
+    stock validation, authorization, and administrative restocking.
+  </li>
+  <li>
+    Used it to improve project documentation and README structure.
+  </li>
+</ul>
+
+<p>
+AI was used as a development and problem-solving assistant rather than as
+a replacement for understanding or testing the implementation. I reviewed,
+implemented, and verified the suggested changes in my own development
+environment.
+</p>
+
+<p>
+<strong>Reflection:</strong>
+Using AI made my workflow faster when I was stuck on unfamiliar errors
+or needed to explore different approaches. It also helped me understand
+problems more clearly and iterate faster. At the same time, I learned the
+importance of checking and testing AI-generated suggestions instead of
+accepting them without understanding how they work.
+</p>
+
 <h2>Demo Video</h2>
 
 <p>
