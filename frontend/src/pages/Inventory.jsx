@@ -23,6 +23,7 @@ import {
   deleteVehicle,
   getVehicles,
   purchaseVehicle,
+  restockVehicle,
   updateVehicle,
 } from "../services/api";
 
@@ -38,6 +39,7 @@ function AnimatedNumber({ value, prefix = "" }) {
 
   useEffect(() => {
     let frame;
+
     const duration = 700;
     const start = performance.now();
 
@@ -78,7 +80,9 @@ function AnimatedNumber({ value, prefix = "" }) {
 // =========================================================
 
 function VehicleVisual({ vehicle }) {
-  const make = String(vehicle.make || "").toLowerCase();
+  const make = String(
+    vehicle.make || "",
+  ).toLowerCase();
 
   let image =
     "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1000&q=85";
@@ -99,7 +103,8 @@ function VehicleVisual({ vehicle }) {
         src={image}
         alt={`${vehicle.make} ${vehicle.model}`}
         onError={(event) => {
-          event.currentTarget.style.display = "none";
+          event.currentTarget.style.display =
+            "none";
         }}
       />
 
@@ -111,6 +116,7 @@ function VehicleVisual({ vehicle }) {
 
       <div className="vehicle-visual-brand">
         <CarFront size={18} />
+
         <span>
           {vehicle.make}
         </span>
@@ -129,25 +135,31 @@ function VehicleCard({
   onEdit,
   onDelete,
   onPurchase,
+  onRestock,
+  isAdmin,
 }) {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] =
+    useState(false);
 
-  const quantity = Number(vehicle.quantity || 0);
-  const price = Number(vehicle.price || 0);
+  const quantity =
+    Number(vehicle.quantity || 0);
+
+  const price =
+    Number(vehicle.price || 0);
 
   const stockStatus =
     quantity <= 0
       ? "Out of stock"
       : quantity <= 2
-      ? "Low stock"
-      : "In stock";
+        ? "Low stock"
+        : "In stock";
 
   const stockClass =
     quantity <= 0
       ? "out"
       : quantity <= 2
-      ? "low"
-      : "good";
+        ? "low"
+        : "good";
 
   return (
     <article className="premium-vehicle-card">
@@ -160,11 +172,13 @@ function VehicleCard({
 
           <div>
             <span className="vehicle-eyebrow">
-              {vehicle.category || "VEHICLE"}
+              {vehicle.category ||
+                "VEHICLE"}
             </span>
 
             <h3>
-              {vehicle.make} {vehicle.model}
+              {vehicle.make}{" "}
+              {vehicle.model}
             </h3>
           </div>
 
@@ -176,7 +190,9 @@ function VehicleCard({
                 menuOpen ? "active" : ""
               }`}
               onClick={() =>
-                setMenuOpen((value) => !value)
+                setMenuOpen(
+                  (value) => !value,
+                )
               }
               aria-label="Vehicle actions"
             >
@@ -186,6 +202,7 @@ function VehicleCard({
             {menuOpen && (
               <div className="vehicle-action-menu">
 
+                {/* EDIT */}
                 <button
                   type="button"
                   onClick={() => {
@@ -197,6 +214,21 @@ function VehicleCard({
                   Edit vehicle
                 </button>
 
+                {/* RESTOCK - ADMIN ONLY */}
+                {isAdmin && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      onRestock(vehicle);
+                    }}
+                  >
+                    <Package size={16} />
+                    Restock vehicle
+                  </button>
+                )}
+
+                {/* DELETE */}
                 <button
                   type="button"
                   className="danger-action"
@@ -216,12 +248,17 @@ function VehicleCard({
 
         </div>
 
+
         <div className="vehicle-price">
           $
-          {price.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-          })}
+          {price.toLocaleString(
+            "en-US",
+            {
+              minimumFractionDigits: 2,
+            },
+          )}
         </div>
+
 
         <div className="vehicle-card-footer">
 
@@ -245,12 +282,15 @@ function VehicleCard({
 
         </div>
 
+
         <div className="vehicle-purchase-action">
 
           <button
             type="button"
             className="primary-button"
-            onClick={() => onPurchase(vehicle)}
+            onClick={() =>
+              onPurchase(vehicle)
+            }
             disabled={quantity === 0}
           >
             {quantity === 0
@@ -286,15 +326,21 @@ function VehicleModal({
     quantity: vehicle?.quantity || "",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [loading, setLoading] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
 
   function handleChange(event) {
     setForm((current) => ({
       ...current,
-      [event.target.name]: event.target.value,
+      [event.target.name]:
+        event.target.value,
     }));
   }
+
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -309,16 +355,18 @@ function VehicleModal({
       setError(
         "Please fill in all vehicle details.",
       );
+
       return;
     }
 
     if (
       Number(form.price) <= 0 ||
-      Number(form.quantity) <= 0
+      Number(form.quantity) < 0
     ) {
       setError(
-        "Price and quantity must be greater than zero.",
+        "Price must be greater than zero and quantity cannot be negative.",
       );
+
       return;
     }
 
@@ -343,6 +391,7 @@ function VehicleModal({
       }
 
       await onSaved();
+
       onClose();
 
     } catch (err) {
@@ -350,17 +399,20 @@ function VehicleModal({
         err.message ||
           "Unable to save vehicle.",
       );
+
     } finally {
       setLoading(false);
     }
   }
+
 
   return (
     <div
       className="vehicle-modal-backdrop"
       onMouseDown={(event) => {
         if (
-          event.target === event.currentTarget &&
+          event.target ===
+            event.currentTarget &&
           !loading
         ) {
           onClose();
@@ -373,6 +425,7 @@ function VehicleModal({
         <div className="vehicle-modal-header">
 
           <div>
+
             <span className="eyebrow">
               {editing
                 ? "INVENTORY UPDATE"
@@ -390,7 +443,9 @@ function VehicleModal({
                 ? "Update the details of this inventory record."
                 : "Add a vehicle to your dealership inventory."}
             </p>
+
           </div>
+
 
           <button
             type="button"
@@ -402,6 +457,7 @@ function VehicleModal({
           </button>
 
         </div>
+
 
         <form
           className="vehicle-form"
@@ -422,6 +478,7 @@ function VehicleModal({
               />
             </label>
 
+
             <label>
               <span>Model</span>
 
@@ -433,6 +490,7 @@ function VehicleModal({
               />
             </label>
 
+
             <label>
               <span>Category</span>
 
@@ -443,6 +501,7 @@ function VehicleModal({
                 placeholder="e.g. Sedan"
               />
             </label>
+
 
             <label>
               <span>Price</span>
@@ -457,13 +516,14 @@ function VehicleModal({
               />
             </label>
 
+
             <label className="full-width">
               <span>Quantity</span>
 
               <input
                 name="quantity"
                 type="number"
-                min="1"
+                min="0"
                 value={form.quantity}
                 onChange={handleChange}
                 placeholder="5"
@@ -472,11 +532,13 @@ function VehicleModal({
 
           </div>
 
+
           {error && (
             <div className="modal-error">
               {error}
             </div>
           )}
+
 
           <div className="vehicle-form-actions">
 
@@ -489,6 +551,7 @@ function VehicleModal({
               Cancel
             </button>
 
+
             <button
               type="submit"
               className="primary-button"
@@ -500,14 +563,248 @@ function VehicleModal({
                     size={17}
                     className="spin"
                   />
+
                   Saving...
                 </>
               ) : (
                 <>
                   <Check size={17} />
+
                   {editing
                     ? "Save Changes"
                     : "Add Vehicle"}
+                </>
+              )}
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+  );
+}
+
+
+// =========================================================
+// RESTOCK MODAL
+// =========================================================
+
+function RestockModal({
+  vehicle,
+  onClose,
+  onRestocked,
+}) {
+  const [quantity, setQuantity] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    setError("");
+
+    const amount =
+      Number(quantity);
+
+    if (
+      !Number.isInteger(amount) ||
+      amount <= 0
+    ) {
+      setError(
+        "Restock quantity must be a positive whole number.",
+      );
+
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await restockVehicle(
+        vehicle.id,
+        amount,
+      );
+
+      await onRestocked();
+
+      onClose();
+
+    } catch (err) {
+      setError(
+        err.message ||
+          "Unable to restock vehicle.",
+      );
+
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
+  return (
+    <div
+      className="vehicle-modal-backdrop"
+      onMouseDown={(event) => {
+        if (
+          event.target ===
+            event.currentTarget &&
+          !loading
+        ) {
+          onClose();
+        }
+      }}
+    >
+
+      <div className="vehicle-modal">
+
+        <div className="vehicle-modal-header">
+
+          <div>
+
+            <span className="eyebrow">
+              INVENTORY RESTOCK
+            </span>
+
+            <h2>
+              Restock Vehicle
+            </h2>
+
+            <p>
+              Add more units to{" "}
+              <strong>
+                {vehicle.make}{" "}
+                {vehicle.model}
+              </strong>
+              .
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            className="modal-close-button"
+            onClick={onClose}
+            disabled={loading}
+          >
+            <X size={20} />
+          </button>
+
+        </div>
+
+
+        <form
+          className="vehicle-form"
+          onSubmit={handleSubmit}
+        >
+
+          <div className="vehicle-form-grid">
+
+            <div className="full-width">
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent:
+                    "space-between",
+                  alignItems:
+                    "center",
+                  padding: "14px 16px",
+                  borderRadius: "12px",
+                  background:
+                    "rgba(255,255,255,0.04)",
+                  marginBottom: "16px",
+                }}
+              >
+
+                <span>
+                  Current stock
+                </span>
+
+                <strong>
+                  {Number(
+                    vehicle.quantity || 0,
+                  )}{" "}
+                  units
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <label className="full-width">
+
+              <span>
+                Quantity to add
+              </span>
+
+              <input
+                type="number"
+                min="1"
+                step="1"
+                value={quantity}
+                onChange={(event) =>
+                  setQuantity(
+                    event.target.value,
+                  )
+                }
+                placeholder="e.g. 5"
+                autoFocus
+              />
+
+            </label>
+
+          </div>
+
+
+          {error && (
+            <div className="modal-error">
+              {error}
+            </div>
+          )}
+
+
+          <div className="vehicle-form-actions">
+
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+
+
+            <button
+              type="submit"
+              className="primary-button"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <RefreshCw
+                    size={17}
+                    className="spin"
+                  />
+
+                  Restocking...
+                </>
+              ) : (
+                <>
+                  <Package size={17} />
+
+                  Restock Vehicle
                 </>
               )}
             </button>
@@ -528,24 +825,43 @@ function VehicleModal({
 // =========================================================
 
 function Inventory() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate =
+    useNavigate();
 
-  const [vehicles, setVehicles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const location =
+    useLocation();
 
-  const [search, setSearch] = useState("");
+
+  const [vehicles, setVehicles] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState("");
+
+
+  const [search, setSearch] =
+    useState("");
+
   const [category, setCategory] =
     useState("All categories");
 
   const [categoryOpen, setCategoryOpen] =
     useState(false);
 
+
   const [modalVehicle, setModalVehicle] =
     useState(null);
 
-  const searchRef = useRef(null);
+  const [restockVehicleData, setRestockVehicleData] =
+    useState(null);
+
+
+  const searchRef =
+    useRef(null);
+
 
   let user = null;
 
@@ -568,14 +884,16 @@ function Inventory() {
       setLoading(true);
       setError("");
 
-      const response = await getVehicles(
-        1,
-        100,
-      );
+      const response =
+        await getVehicles(
+          1,
+          100,
+        );
 
-      const items = Array.isArray(response)
-        ? response
-        : response?.items || [];
+      const items =
+        Array.isArray(response)
+          ? response
+          : response?.items || [];
 
       setVehicles(items);
 
@@ -584,10 +902,12 @@ function Inventory() {
         err.message ||
           "Unable to load inventory.",
       );
+
     } finally {
       setLoading(false);
     }
   }
+
 
   useEffect(() => {
     loadVehicles();
@@ -599,9 +919,10 @@ function Inventory() {
   // -------------------------------------------------------
 
   useEffect(() => {
-    const params = new URLSearchParams(
-      location.search,
-    );
+    const params =
+      new URLSearchParams(
+        location.search,
+      );
 
     const query =
       params.get("search") || "";
@@ -614,72 +935,94 @@ function Inventory() {
   // Categories
   // -------------------------------------------------------
 
-  const categories = useMemo(() => {
-    const unique = new Set();
+  const categories =
+    useMemo(() => {
+      const unique =
+        new Set();
 
-    vehicles.forEach((vehicle) => {
-      if (vehicle.category) {
-        unique.add(vehicle.category);
-      }
-    });
+      vehicles.forEach(
+        (vehicle) => {
+          if (vehicle.category) {
+            unique.add(
+              vehicle.category,
+            );
+          }
+        },
+      );
 
-    return [
-      "All categories",
-      ...Array.from(unique),
-    ];
-  }, [vehicles]);
+      return [
+        "All categories",
+        ...Array.from(unique),
+      ];
+    }, [vehicles]);
 
 
   // -------------------------------------------------------
   // Filter
   // -------------------------------------------------------
 
-  const filteredVehicles = useMemo(() => {
-    const query = search
-      .trim()
-      .toLowerCase();
+  const filteredVehicles =
+    useMemo(() => {
+      const query =
+        search
+          .trim()
+          .toLowerCase();
 
-    return vehicles.filter((vehicle) => {
-      const matchesSearch =
-        !query ||
-        String(vehicle.make || "")
-          .toLowerCase()
-          .includes(query) ||
-        String(vehicle.model || "")
-          .toLowerCase()
-          .includes(query) ||
-        String(vehicle.category || "")
-          .toLowerCase()
-          .includes(query);
+      return vehicles.filter(
+        (vehicle) => {
+          const matchesSearch =
+            !query ||
+            String(
+              vehicle.make || "",
+            )
+              .toLowerCase()
+              .includes(query) ||
+            String(
+              vehicle.model || "",
+            )
+              .toLowerCase()
+              .includes(query) ||
+            String(
+              vehicle.category || "",
+            )
+              .toLowerCase()
+              .includes(query);
 
-      const matchesCategory =
-        category === "All categories" ||
-        String(vehicle.category || "")
-          .toLowerCase() ===
-          category.toLowerCase();
+          const matchesCategory =
+            category ===
+              "All categories" ||
+            String(
+              vehicle.category || "",
+            )
+              .toLowerCase() ===
+              category.toLowerCase();
 
-      return (
-        matchesSearch &&
-        matchesCategory
+          return (
+            matchesSearch &&
+            matchesCategory
+          );
+        },
       );
-    });
-  }, [
-    vehicles,
-    search,
-    category,
-  ]);
+    }, [
+      vehicles,
+      search,
+      category,
+    ]);
 
 
-  const totalUnits = useMemo(
-    () =>
-      filteredVehicles.reduce(
-        (sum, vehicle) =>
-          sum +
-          Number(vehicle.quantity || 0),
-        0,
-      ),
-    [filteredVehicles],
-  );
+  const totalUnits =
+    useMemo(
+      () =>
+        filteredVehicles.reduce(
+          (sum, vehicle) =>
+            sum +
+            Number(
+              vehicle.quantity || 0,
+            ),
+          0,
+        ),
+      [filteredVehicles],
+    );
 
 
   // -------------------------------------------------------
@@ -687,11 +1030,13 @@ function Inventory() {
   // -------------------------------------------------------
 
   function handleSearch(event) {
-    const value = event.target.value;
+    const value =
+      event.target.value;
 
     setSearch(value);
 
-    const params = new URLSearchParams();
+    const params =
+      new URLSearchParams();
 
     if (value.trim()) {
       params.set(
@@ -706,7 +1051,9 @@ function Inventory() {
           ? `?${params.toString()}`
           : ""
       }`,
-      { replace: true },
+      {
+        replace: true,
+      },
     );
   }
 
@@ -715,17 +1062,25 @@ function Inventory() {
   // Delete
   // -------------------------------------------------------
 
-  async function handleDelete(vehicle) {
-    const confirmed = window.confirm(
-      `Delete ${vehicle.make} ${vehicle.model} from inventory?`,
-    );
+  async function handleDelete(
+    vehicle,
+  ) {
+    const confirmed =
+      window.confirm(
+        `Delete ${vehicle.make} ${vehicle.model} from inventory?`,
+      );
 
     if (!confirmed) {
       return;
     }
 
     try {
-      await deleteVehicle(vehicle.id);
+      setError("");
+
+      await deleteVehicle(
+        vehicle.id,
+      );
+
       await loadVehicles();
 
     } catch (err) {
@@ -741,15 +1096,23 @@ function Inventory() {
   // Purchase
   // -------------------------------------------------------
 
-  async function handlePurchase(vehicle) {
-    if (Number(vehicle.quantity || 0) <= 0) {
+  async function handlePurchase(
+    vehicle,
+  ) {
+    if (
+      Number(
+        vehicle.quantity || 0,
+      ) <= 0
+    ) {
       return;
     }
 
     try {
       setError("");
 
-      await purchaseVehicle(vehicle.id);
+      await purchaseVehicle(
+        vehicle.id,
+      );
 
       await loadVehicles();
 
@@ -763,6 +1126,23 @@ function Inventory() {
 
 
   // -------------------------------------------------------
+  // Restock
+  // -------------------------------------------------------
+
+  function handleRestock(
+    vehicle,
+  ) {
+    if (!user?.is_admin) {
+      return;
+    }
+
+    setRestockVehicleData(
+      vehicle,
+    );
+  }
+
+
+  // -------------------------------------------------------
   // Render
   // -------------------------------------------------------
 
@@ -771,12 +1151,16 @@ function Inventory() {
 
       <Sidebar
         activePage="inventory"
-        isAdmin={Boolean(user?.is_admin)}
+        isAdmin={Boolean(
+          user?.is_admin,
+        )}
       />
+
 
       <main className="main-content">
 
         <Topbar user={user} />
+
 
         <div className="inventory-page">
 
@@ -792,6 +1176,7 @@ function Inventory() {
               <ArrowLeft size={17} />
               Dashboard
             </button>
+
 
             <div className="inventory-heading-row">
 
@@ -813,6 +1198,7 @@ function Inventory() {
 
               </div>
 
+
               <button
                 type="button"
                 className="primary-button inventory-add-button"
@@ -833,16 +1219,23 @@ function Inventory() {
             <div className="dashboard-error">
 
               <div>
+
                 <strong>
-                  Unable to load inventory
+                  Inventory error
                 </strong>
 
-                <span>{error}</span>
+                <span>
+                  {error}
+                </span>
+
               </div>
+
 
               <button
                 type="button"
-                onClick={loadVehicles}
+                onClick={
+                  loadVehicles
+                }
               >
                 <RefreshCw size={16} />
                 Retry
@@ -869,9 +1262,12 @@ function Inventory() {
               <input
                 ref={searchRef}
                 value={search}
-                onChange={handleSearch}
+                onChange={
+                  handleSearch
+                }
                 placeholder="Search make, model or category..."
               />
+
 
               {search && (
                 <button
@@ -897,7 +1293,7 @@ function Inventory() {
             </div>
 
 
-            {/* CUSTOM CATEGORY */}
+            {/* CATEGORY */}
 
             <div className="category-filter-wrapper">
 
@@ -910,7 +1306,8 @@ function Inventory() {
                 }`}
                 onClick={() =>
                   setCategoryOpen(
-                    (value) => !value,
+                    (value) =>
+                      !value,
                   )
                 }
               >
@@ -930,6 +1327,7 @@ function Inventory() {
 
               </button>
 
+
               {categoryOpen && (
                 <div className="category-dropdown">
 
@@ -944,7 +1342,10 @@ function Inventory() {
                             : ""
                         }
                         onClick={() => {
-                          setCategory(item);
+                          setCategory(
+                            item,
+                          );
+
                           setCategoryOpen(
                             false,
                           );
@@ -975,7 +1376,9 @@ function Inventory() {
             <button
               type="button"
               className="refresh-inventory-button"
-              onClick={loadVehicles}
+              onClick={
+                loadVehicles
+              }
               disabled={loading}
               title="Refresh inventory"
             >
@@ -1012,11 +1415,14 @@ function Inventory() {
 
             </div>
 
+
             <div>
 
               <strong>
                 <AnimatedNumber
-                  value={totalUnits}
+                  value={
+                    totalUnits
+                  }
                 />
               </strong>
 
@@ -1095,7 +1501,9 @@ function Inventory() {
                   >
 
                     <VehicleCard
-                      vehicle={vehicle}
+                      vehicle={
+                        vehicle
+                      }
 
                       onEdit={
                         (item) =>
@@ -1110,6 +1518,16 @@ function Inventory() {
 
                       onPurchase={
                         handlePurchase
+                      }
+
+                      onRestock={
+                        handleRestock
+                      }
+
+                      isAdmin={
+                        Boolean(
+                          user?.is_admin,
+                        )
                       }
                     />
 
@@ -1127,7 +1545,7 @@ function Inventory() {
       </main>
 
 
-      {/* MODAL */}
+      {/* ADD / EDIT MODAL */}
 
       {modalVehicle !== null && (
         <VehicleModal
@@ -1138,10 +1556,35 @@ function Inventory() {
           }
 
           onClose={() =>
-            setModalVehicle(null)
+            setModalVehicle(
+              null,
+            )
           }
 
-          onSaved={loadVehicles}
+          onSaved={
+            loadVehicles
+          }
+        />
+      )}
+
+
+      {/* RESTOCK MODAL */}
+
+      {restockVehicleData !== null && (
+        <RestockModal
+          vehicle={
+            restockVehicleData
+          }
+
+          onClose={() =>
+            setRestockVehicleData(
+              null,
+            )
+          }
+
+          onRestocked={
+            loadVehicles
+          }
         />
       )}
 
