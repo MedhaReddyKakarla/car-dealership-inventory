@@ -2,12 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.dependencies.auth import get_current_user, require_admin
+from app.dependencies.auth import (
+    get_current_user,
+    require_admin,
+)
 from app.models.user import User
 from app.models.vehicle import Vehicle
 from app.schemas.vehicle import (
     VehicleCreate,
-    VehicleListResponse,
     VehicleResponse,
     VehicleUpdate,
 )
@@ -19,8 +21,14 @@ from app.services.vehicle_service import (
     search_vehicles,
     update_vehicle,
 )
+
+
 router = APIRouter()
 
+
+# =========================================================
+# CREATE VEHICLE
+# =========================================================
 
 @router.post(
     "",
@@ -38,12 +46,17 @@ def create_vehicle_endpoint(
             vehicle_data=vehicle_data,
             owner_id=current_user.id,
         )
+
     except ValueError as exc:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(exc),
         )
 
+
+# =========================================================
+# GET VEHICLES
+# =========================================================
 
 @router.get(
     "",
@@ -86,6 +99,10 @@ def list_vehicles(
     }
 
 
+# =========================================================
+# SEARCH VEHICLES
+# =========================================================
+
 @router.get(
     "/search",
     response_model=list[VehicleResponse],
@@ -115,6 +132,10 @@ def search_vehicle_endpoint(
     )
 
 
+# =========================================================
+# UPDATE VEHICLE
+# =========================================================
+
 @router.put(
     "/{vehicle_id}",
     response_model=VehicleResponse,
@@ -137,6 +158,7 @@ def update_vehicle_endpoint(
             detail="Vehicle not found",
         )
 
+    # Owner or administrator can edit
     if (
         not current_user.is_admin
         and vehicle.owner_id is not None
@@ -153,6 +175,7 @@ def update_vehicle_endpoint(
             vehicle_id=vehicle_id,
             vehicle_data=vehicle_data,
         )
+
     except ValueError as exc:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -161,6 +184,10 @@ def update_vehicle_endpoint(
 
     return updated_vehicle
 
+
+# =========================================================
+# DELETE VEHICLE
+# =========================================================
 
 @router.delete(
     "/{vehicle_id}",
@@ -171,6 +198,18 @@ def delete_vehicle_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_admin),
 ):
+    vehicle = (
+        db.query(Vehicle)
+        .filter(Vehicle.id == vehicle_id)
+        .first()
+    )
+
+    if vehicle is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Vehicle not found",
+        )
+
     deleted = delete_vehicle(
         db=db,
         vehicle_id=vehicle_id,
