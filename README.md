@@ -12,9 +12,9 @@
 
 <p align="center">
 
-&#x20; A full-stack inventory management application for managing vehicles,
+&#x20; Full-stack web application for managing vehicle inventory,
 
-&#x20; stock, users, purchases, and administrative inventory operations.
+&#x20; purchases, stock levels, and administrative operations.
 
 </p>
 
@@ -22,15 +22,27 @@
 
 <p align="center">
 
-&#x20; <a href="https://car-dealership-frontend-jvvk.onrender.com/">Live Demo</a>
+&#x20; <a href="https://car-dealership-frontend-jvvk.onrender.com/">
 
-&#x20; \&nbsp; | \&nbsp;
+&#x20;   Live Demo
 
-&#x20; <a href="https://car-dealership-api-ab6n.onrender.com/docs">API Documentation</a>
+&#x20; </a>
 
-&#x20; \&nbsp; | \&nbsp;
+&#x20; \&nbsp; • \&nbsp;
 
-&#x20; <a href="https://drive.google.com/file/d/1R6y4OwZA6g4P16\_POnQJg5ZSlsl3oS2U/view?usp=sharing">Demo Video</a>
+&#x20; <a href="https://car-dealership-api-ab6n.onrender.com/docs">
+
+&#x20;   API Documentation
+
+&#x20; </a>
+
+&#x20; \&nbsp; • \&nbsp;
+
+&#x20; <a href="https://drive.google.com/file/d/1R6y4OwZA6g4P16\_POnQJg5ZSlsl3oS2U/view?usp=sharing">
+
+&#x20;   Demo Video
+
+&#x20; </a>
 
 </p>
 
@@ -44,23 +56,25 @@
 
 
 
-VeyraDrive is a full-stack car dealership inventory management system built
+<p>
 
-with React, FastAPI, PostgreSQL, SQLAlchemy, and JWT-based authentication.
+&#x20; VeyraDrive is a full-stack car dealership inventory management system
 
+&#x20; built with React, FastAPI, PostgreSQL, SQLAlchemy, and JWT authentication.
 
-
-The application provides secure user authentication, vehicle inventory
-
-management, search and filtering, purchasing, and role-based administrative
-
-stock operations.
+</p>
 
 
 
-The application is deployed to the cloud with the frontend and backend
+<p>
 
-hosted on Render.
+&#x20; The application allows authenticated users to manage vehicles, search and
+
+&#x20; filter inventory, purchase vehicles, and perform stock operations based on
+
+&#x20; their assigned permissions.
+
+</p>
 
 
 
@@ -70,27 +84,25 @@ hosted on Render.
 
 <ul>
 
-&#x20; <li>JWT-based user authentication</li>
+&#x20; <li>JWT-based authentication</li>
 
-&#x20; <li>Role-based authorization with admin access control</li>
+&#x20; <li>Role-based authorization and admin access control</li>
 
 &#x20; <li>Create, view, update, and delete vehicle records</li>
 
 &#x20; <li>Vehicle search and category-based filtering</li>
 
-&#x20; <li>Minimum and maximum price filtering</li>
+&#x20; <li>Price range filtering</li>
 
-&#x20; <li>Vehicle purchase functionality with automatic stock reduction</li>
+&#x20; <li>Vehicle purchase with automatic stock reduction</li>
 
 &#x20; <li>Out-of-stock protection</li>
 
 &#x20; <li>Admin-only vehicle restocking</li>
 
-&#x20; <li>Inventory refresh after purchase and restock operations</li>
-
 &#x20; <li>Protected REST API endpoints</li>
 
-&#x20; <li>Automated backend testing with Pytest</li>
+&#x20; <li>Automatic inventory refresh after stock changes</li>
 
 </ul>
 
@@ -178,47 +190,63 @@ hosted on Render.
 
 
 
-<h2>Application Architecture</h2>
+<h2>Authentication \& Authorization</h2>
 
 
 
-<pre>
+<p>
 
-&#x20;                   User
+&#x20; Authentication is implemented using JWT access tokens. Protected API
 
-&#x20;                    |
+&#x20; requests require a valid bearer token.
 
-&#x20;                    v
+</p>
 
-&#x20;           React / Vite Frontend
 
-&#x20;                    |
 
-&#x20;               HTTPS / REST
+<p>
 
-&#x20;                    |
+&#x20; The application also implements role-based authorization for administrative
 
-&#x20;                    v
+&#x20; inventory operations.
 
-&#x20;            FastAPI Backend
+</p>
 
-&#x20;                    |
 
-&#x20;         +----------+----------+
 
-&#x20;         |                     |
+<ul>
 
-&#x20;         v                     v
+&#x20; <li><strong>Users:</strong> View, search, purchase, and manage permitted vehicles</li>
 
-&#x20;    JWT Authentication     SQLAlchemy
+&#x20; <li><strong>Administrators:</strong> Additional access to restocking and deletion operations</li>
 
-&#x20;                               |
+</ul>
 
-&#x20;                               v
 
-&#x20;                        PostgreSQL Database
 
-</pre>
+<h2>Inventory Management</h2>
+
+
+
+<p>
+
+&#x20; Vehicle inventory supports the complete lifecycle of adding, updating,
+
+&#x20; purchasing, restocking, and removing vehicles.
+
+</p>
+
+
+
+<p>
+
+&#x20; Purchasing decreases the available quantity and prevents purchases when
+
+&#x20; inventory reaches zero. Restocking increases inventory and is restricted
+
+&#x20; to administrators.
+
+</p>
 
 
 
@@ -226,157 +254,67 @@ hosted on Render.
 
 
 
-The application is deployed using Render.
+<p>
 
+&#x20; The application is deployed on Render with separate frontend and backend
 
+&#x20; services.
 
-<strong>Frontend</strong><br>
+</p>
 
-<a href="https://car-dealership-frontend-jvvk.onrender.com/">
 
-https://car-dealership-frontend-jvvk.onrender.com/
 
-</a>
+<p>
 
+&#x20; <strong>Frontend</strong><br>
 
+&#x20; <a href="https://car-dealership-frontend-jvvk.onrender.com/">
 
-<br><br>
+&#x20;   https://car-dealership-frontend-jvvk.onrender.com/
 
+&#x20; </a>
 
+</p>
 
-<strong>Backend API</strong><br>
 
-<a href="https://car-dealership-api-ab6n.onrender.com/">
 
-https://car-dealership-api-ab6n.onrender.com/
+<p>
 
-</a>
+&#x20; <strong>Backend API</strong><br>
 
+&#x20; <a href="https://car-dealership-api-ab6n.onrender.com/">
 
+&#x20;   https://car-dealership-api-ab6n.onrender.com/
 
-<br><br>
+&#x20; </a>
 
+</p>
 
 
-<strong>Swagger API Documentation</strong><br>
 
-<a href="https://car-dealership-api-ab6n.onrender.com/docs">
+<p>
 
-https://car-dealership-api-ab6n.onrender.com/docs
+&#x20; <strong>Swagger API Documentation</strong><br>
 
-</a>
+&#x20; <a href="https://car-dealership-api-ab6n.onrender.com/docs">
 
+&#x20;   https://car-dealership-api-ab6n.onrender.com/docs
 
+&#x20; </a>
 
-<br><br>
+</p>
 
 
 
-The backend uses the <code>DATABASE\_URL</code> environment variable for
+<p>
 
-database connectivity. Database credentials and application secrets are
+&#x20; The backend uses the <code>DATABASE\_URL</code> environment variable for
 
-kept outside the source code.
+&#x20; database connectivity. Database credentials and application secrets are
 
+&#x20; stored outside the source code.
 
-
-<h2>Authentication and Authorization</h2>
-
-
-
-The application uses JWT-based authentication.
-
-
-
-After successful login, the frontend stores the authentication token and
-
-uses it when communicating with protected backend endpoints.
-
-
-
-Role-based authorization is implemented for administrative operations.
-
-
-
-<strong>Regular users</strong> can:
-
-
-
-<ul>
-
-&#x20; <li>View inventory</li>
-
-&#x20; <li>Search vehicles</li>
-
-&#x20; <li>Purchase vehicles</li>
-
-&#x20; <li>Manage vehicles according to ownership permissions</li>
-
-</ul>
-
-
-
-<strong>Administrators</strong> can additionally:
-
-
-
-<ul>
-
-&#x20; <li>Restock vehicles</li>
-
-&#x20; <li>Delete vehicles</li>
-
-&#x20; <li>Perform administrative inventory operations</li>
-
-</ul>
-
-
-
-<h2>Inventory Operations</h2>
-
-
-
-The system supports the complete inventory lifecycle:
-
-
-
-<pre>
-
-Create Vehicle
-
-&#x20;     |
-
-&#x20;     v
-
-Available Inventory
-
-&#x20;     |
-
-&#x20;     +------> Purchase ------> Quantity decreases
-
-&#x20;     |
-
-&#x20;     +------> Admin Restock -> Quantity increases
-
-&#x20;     |
-
-&#x20;     +------> Update
-
-&#x20;     |
-
-&#x20;     +------> Delete
-
-</pre>
-
-
-
-Purchasing is protected against negative inventory. When the available
-
-quantity reaches zero, further purchases are rejected.
-
-
-
-Restocking is restricted to users with administrator privileges.
+</p>
 
 
 
@@ -384,63 +322,39 @@ Restocking is restricted to users with administrator privileges.
 
 
 
-The backend is tested using Pytest.
+<p>
+
+&#x20; The backend is tested using Pytest.
+
+</p>
 
 
 
-Current test result:
+<p>
+
+&#x20; <strong>Current result: 28 tests passed</strong>
+
+</p>
 
 
 
-<strong>28 tests passed</strong>
+<p>
+
+&#x20; Tests cover authentication, vehicle operations, authorization,
+
+&#x20; purchase behaviour, stock validation, and administrative restocking.
+
+</p>
 
 
 
-The test suite covers authentication, vehicle operations, authorization,
+<p>
 
-purchase behaviour, stock validation, and administrative restocking.
+&#x20; Test output:
 
+&#x20; <code>backend/test-report.txt</code>
 
-
-Test output is available in:
-
-
-
-<code>backend/test-report.txt</code>
-
-
-
-<h2>Development Approach</h2>
-
-
-
-The purchase and restock functionality was developed using a
-
-test-driven development approach.
-
-
-
-Tests were added for:
-
-
-
-<ul>
-
-&#x20; <li>Successful vehicle purchase</li>
-
-&#x20; <li>Out-of-stock purchase handling</li>
-
-&#x20; <li>Successful administrator restocking</li>
-
-&#x20; <li>Authorization of regular users attempting administrative operations</li>
-
-</ul>
-
-
-
-The frontend was then connected to the protected backend APIs and inventory
-
-state was refreshed after successful stock operations.
+</p>
 
 
 
@@ -450,9 +364,11 @@ state was refreshed after successful stock operations.
 
 <p>
 
-&#x20; <strong>Demo:</strong>
+&#x20; <a href="https://drive.google.com/file/d/1R6y4OwZA6g4P16\_POnQJg5ZSlsl3oS2U/view?usp=sharing">
 
-&#x20; <a href="https://drive.google.com/file/d/1R6y4OwZA6g4P16\_POnQJg5ZSlsl3oS2U/view?usp=sharing">Open project demonstration video</a>
+&#x20;   Open project demonstration video
+
+&#x20; </a>
 
 </p>
 
@@ -460,9 +376,9 @@ state was refreshed after successful stock operations.
 
 <p>
 
-&#x20; The demo demonstrates authentication, inventory management, vehicle
+&#x20; The demonstration covers authentication, inventory management,
 
-&#x20; purchase, stock updates, and administrative restocking.
+&#x20; vehicle purchase, stock updates, and administrative restocking.
 
 </p>
 
@@ -472,61 +388,35 @@ state was refreshed after successful stock operations.
 
 
 
+<p>
+
+&#x20; The project is organized into separate frontend, backend, testing,
+
+&#x20; and deployment configuration components.
+
+</p>
+
+
+
 <pre>
 
 car-dealership-inventory/
 
-|
+├── backend/
 
-+-- backend/
+│   ├── app/
 
-|   +-- app/
+│   └── tests/
 
-|   |   +-- models/
+├── frontend/
 
-|   |   +-- routers/
+│   └── src/
 
-|   |   +-- schemas/
+├── PROMPTS.md
 
-|   |   +-- services/
+├── README.md
 
-|   |   +-- dependencies/
-
-|   |   +-- database.py
-
-|   |   +-- main.py
-
-|   |
-
-|   +-- tests/
-
-|   +-- test-report.txt
-
-|
-
-+-- frontend/
-
-|   +-- src/
-
-|       +-- components/
-
-|       +-- pages/
-
-|       +-- services/
-
-|       +-- App.jsx
-
-|
-
-+-- screenshots/
-
-|
-
-+-- PROMPTS.md
-
-+-- README.md
-
-+-- docker-compose.yml
+└── docker-compose.yml
 
 </pre>
 
@@ -568,7 +458,7 @@ npm run dev
 
 
 
-<strong>Run Backend Tests</strong>
+<strong>Run Tests</strong>
 
 
 
@@ -593,32 +483,6 @@ cd frontend
 npm run build
 
 </pre>
-
-
-
-<h2>Project Highlights</h2>
-
-
-
-<ul>
-
-&#x20; <li>Full-stack React and FastAPI architecture</li>
-
-&#x20; <li>RESTful API design</li>
-
-&#x20; <li>JWT authentication and role-based authorization</li>
-
-&#x20; <li>PostgreSQL database integration using SQLAlchemy</li>
-
-&#x20; <li>Cloud deployment using Render</li>
-
-&#x20; <li>Inventory transaction handling</li>
-
-&#x20; <li>Automated backend testing</li>
-
-&#x20; <li>Clean separation between frontend, API, services, and database layers</li>
-
-</ul>
 
 
 
